@@ -79,6 +79,7 @@ export const CONFIG = {
       projects: [
         {
           title: 'Leads Preschool Website (MERN)',
+          room: 'preschool',
           year: '2025',
           href: 'https://leads-preschool.vercel.app/',
           bullets: [
@@ -100,6 +101,7 @@ export const CONFIG = {
         },
         {
           title: 'New Year Auspicious Time Website',
+          room: 'avurudu',
           year: '2026',
           href: 'https://kaviduhpremasiri-nine.vercel.app/',
           bullets: [
@@ -110,7 +112,7 @@ export const CONFIG = {
         },
         { title: 'Poker Game Website' },
       ],
-      buttons: [{ label: 'More on GitHub', href: 'github' }],
+      buttons: [{ label: 'Enter the 3D Lab →', action: 'lab' }, { label: 'More on GitHub', href: 'github' }],
     },
   },
 };

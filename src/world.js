@@ -15,7 +15,7 @@ const ni = (g) => {
   for (const k of Object.keys(n.attributes)) if (!['position', 'normal', 'uv'].includes(k)) n.deleteAttribute(k);
   return n;
 };
-const GEO = {
+export const GEO = {
   box: ni(new THREE.BoxGeometry(1, 1, 1)),
   cyl: ni(new THREE.CylinderGeometry(1, 1, 1, 12)),
   cone: ni(new THREE.ConeGeometry(1, 1, 8)),
@@ -23,7 +23,7 @@ const GEO = {
 };
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _c = new THREE.Color();
 
-class Batch {
+export class Batch {
   constructor() { this.parts = { lit: [], glow: [] }; this.base = new THREE.Matrix4(); this.stack = []; }
   push(m) { this.stack.push(this.base.clone()); this.base.multiply(m); }
   pop() { this.base = this.stack.pop(); }
@@ -423,8 +423,11 @@ export function buildWorld(scene, { mobile = false } = {}) {
     box('glow', 0xa56bff, 3.9, 6.7, 1.12, 0.09, 2.75, 0.09);
     const sign = plane(g, T.signTexture('labs'), 8.4, 2.1, -0.5, 6.7, 1.14);
     steps(3, 6.5, 3.9, 0.55, 0.15, 0x8a84b0);
+    const bh = new THREE.Mesh(new THREE.BoxGeometry(9.2, 3.0, 1.4), new THREE.MeshBasicMaterial()); bh.visible = false; bh.position.set(-0.5, 6.7, 1.0); g.add(bh);
+    pickables.push({ key: 'labsInfo', mesh: bh, label: 'My Projects Lab · project details', priority: true, sign, anchor: new THREE.Vector3(20, 9, -3.5) });
     return { hit: [14.5, 9.5, 9.4], top: 9.4, sign, gear };
   });
+  pickables[pickables.length - 1].go = 'labsLab';   // clicking the building walks inside
 
   // ════════ PATHS ════════
   const pathSeg = (x1, z1, x2, z2, w, color = 0xa5a2c4) => {
