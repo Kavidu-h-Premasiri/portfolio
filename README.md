@@ -15,7 +15,9 @@ After editing run:  `npm install` (once) then `npm run build`
 - `index.html`        – page + Tailwind-styled UI (nav, panel, loader)
 - `src/world.js`      – the whole 3D scene (island, buildings, plaza, hologram, bridge, water, sky)
 - `src/textures.js`   – signs, facades, paving etc. painted on canvas (no image files to download)
-- `src/main.js`       – renderer, camera controls, picking, UI wiring, adaptive quality
+- `src/main.js`       – renderer, camera, picking, UI wiring, adaptive quality, enter/exit of the Projects Lab
+- `src/lab.js`        – the Projects Lab interior (hall, reflective floor, Preschool and Avurudu showrooms)
+- `src/labtextures.js` – screens, signs, sunset windows and Avurudu hologram panels painted on canvas
 - `js/app.js`         – prebuilt, minified bundle (three.js included, ~535 KB / ~140 KB gzipped)
 - `css/styles.css`    – prebuilt, minified Tailwind (~14 KB)
 
@@ -25,3 +27,15 @@ After editing run:  `npm install` (once) then `npm run build`
 - No real-time shadows; lamp glow = additive sprites
 - Pixel ratio capped (2 desktop / 1.5 phones) and auto-lowered if FPS drops
 - Pauses automatically in background tabs; respects "reduce motion"
+
+## Projects Lab interior
+Click the My Projects Lab building (or "Projects" in the menu) to walk in. Use the ‹ › arrows (or ← → keys) to switch
+between project showrooms. Hover a model to see the project details; click "CLICK TO EXPLORE" to open the live site.
+To add another project room: add `room: 'yourKey'` to the project in `src/config.js` and build a room in `src/lab.js`.
+
+## Projects Lab – table, laptop & details reader
+- Click the **model** in a room → opens that project's live site (`href` in `src/config.js`).
+- Click the **laptop on the table** → opens a scrollable project-details window (bullets, tech stack, live-site button). Add extra sections per project with `details: [{ heading: '…', text: '…' }]` in `src/config.js`.
+- Click the **"My Projects Lab" banner** on the island → opens the full project list panel (it also has an "Enter the 3D Lab" button). Clicking the rest of the building still walks you inside.
+- Rebuild after editing: `npm run build`
+
