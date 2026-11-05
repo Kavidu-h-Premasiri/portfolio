@@ -15,7 +15,7 @@ const ni = (g) => {
   for (const k of Object.keys(n.attributes)) if (!['position', 'normal', 'uv'].includes(k)) n.deleteAttribute(k);
   return n;
 };
-const GEO = {
+export const GEO = {
   box: ni(new THREE.BoxGeometry(1, 1, 1)),
   cyl: ni(new THREE.CylinderGeometry(1, 1, 1, 12)),
   cone: ni(new THREE.ConeGeometry(1, 1, 8)),
@@ -23,7 +23,7 @@ const GEO = {
 };
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _c = new THREE.Color();
 
-class Batch {
+export class Batch {
   constructor() { this.parts = { lit: [], glow: [] }; this.base = new THREE.Matrix4(); this.stack = []; }
   push(m) { this.stack.push(this.base.clone()); this.base.multiply(m); }
   pop() { this.base = this.stack.pop(); }
@@ -398,8 +398,11 @@ export function buildWorld(scene, { mobile = false } = {}) {
       box('lit', 0x4a3a2a, s * 3.3, 4.55, 4.1, 1.5, 0.1, 0.1);
     }
     steps(4, 7.5, 4.3, 0.55, 0.15, 0xdcd0bb);
+    const bh = new THREE.Mesh(new THREE.BoxGeometry(10, 2.8, 1.4), new THREE.MeshBasicMaterial()); bh.visible = false; bh.position.set(0, 7.2, 1.0); g.add(bh);
+    pickables.push({ key: 'sliitInfo', mesh: bh, label: 'SLIIT University · education details', priority: true, sign, anchor: new THREE.Vector3(-20, 9, -3.5) });
     return { hit: [15.5, 10, 9], top: 9.8, sign };
   });
+  pickables[pickables.length - 1].go = 'sliitLab';   // clicking the building walks inside
 
   // ---- My Projects Lab (right, purple neon) ----
   addBuilding('labs', 20, -3.5, -0.52, 1.0, (g) => {

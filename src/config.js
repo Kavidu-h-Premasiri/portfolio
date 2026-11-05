@@ -52,6 +52,7 @@ export const CONFIG = {
         'Expected graduation: April 2027',
       ],
       tags: ['Software Development', 'Modern Web', '3D Experiences', 'DevOps'],
+      buttons: [{ label: 'Enter the SLIIT Showroom →', action: 'sliitlab' }],
     },
 
     nupa: {
@@ -79,6 +80,7 @@ export const CONFIG = {
       projects: [
         {
           title: 'Leads Preschool Website (MERN)',
+          room: 'preschool',
           year: '2025',
           href: 'https://leads-preschool.vercel.app/',
           bullets: [
@@ -100,6 +102,7 @@ export const CONFIG = {
         },
         {
           title: 'New Year Auspicious Time Website',
+          room: 'avurudu',
           year: '2026',
           href: 'https://kaviduhpremasiri-nine.vercel.app/',
           bullets: [
