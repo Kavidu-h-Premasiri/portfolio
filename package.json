@@ -1,0 +1,14 @@
+{
+  "name": "kavidu-3d-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:js": "esbuild src/main.js --bundle --minify --target=es2019 --format=iife --legal-comments=none --outfile=js/app.js",
+    "build:css": "tailwindcss -c tailwind.config.js -i css/input.css -o css/styles.css --minify",
+    "build": "npm run build:js && npm run build:css",
+    "watch": "npm run build:js -- --watch & npm run build:css -- --watch",
+    "serve": "npx serve ."
+  },
+  "dependencies": { "three": "0.160.0" },
+  "devDependencies": { "esbuild": "*", "tailwindcss": "3.4.17" }
+}
