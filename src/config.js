@@ -134,6 +134,21 @@ export const CONFIG = {
           ],
           stack: ['React', 'CSS', 'JavaScript', 'Vercel'],
         },
+        {
+          title: '3D Portfolio Website',
+          room: 'portfolio',
+          year: '2026',
+          href: '', // TODO: paste the hosted URL here once the site is deployed
+          bullets: [
+            'Interactive 3D portfolio built with Three.js that represents my education, professional experience and personal projects as a virtual island world.',
+            'Three themed buildings – SLIIT University, NupaStack and My Projects Lab – each with walk-in showrooms, project readers and live website links.',
+          ],
+          details: [
+            { heading: 'Key features', items: ['Interactive 3D environment with drag, pinch and scroll camera controls', 'Three themed buildings with their own walk-in showrooms', 'Smooth camera navigation between the island and each showroom', 'Project & skills showcase with scrollable details readers', 'Responsive UI for desktop, tablet and mobile'] },
+            { heading: 'How it is built', text: 'Procedural scenes written in Three.js r160 (merged geometry, canvas-painted textures, raycast picking). The interface uses Tailwind CSS and vanilla JavaScript modules, bundled with esbuild into one static site.' },
+          ],
+          stack: ['Three.js r160', 'JavaScript (ES Modules)', 'WebGL', 'Tailwind CSS', 'HTML5 Canvas', 'esbuild'],
+        },
         { title: 'Poker Game Website' },
       ],
       buttons: [{ label: 'Enter the 3D Lab →', action: 'lab' }, { label: 'More on GitHub', href: 'github' }],

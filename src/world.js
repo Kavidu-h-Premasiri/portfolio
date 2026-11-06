@@ -366,8 +366,11 @@ export function buildWorld(scene, { mobile = false } = {}) {
     // steps
     steps(5, 5.6, 4.0, 0.55, 0.09, 0x9895b8);
     for (const s of [-1, 1]) { box('lit', 0x6a6890, s * 3.1, 0.35, 5.4, 0.35, 0.7, 2.8); box('glow', 0x35c9ff, s * 3.1, 0.75, 5.4, 0.1, 0.06, 2.7); }
+    const bh = new THREE.Mesh(new THREE.BoxGeometry(9.4, 2.8, 1.4), new THREE.MeshBasicMaterial()); bh.visible = false; bh.position.set(0, 8.85, 0.9); g.add(bh);
+    pickables.push({ key: 'nupaInfo', mesh: bh, label: 'NupaStack · project details', priority: true, sign, anchor: new THREE.Vector3(0, 10, -11.5) });
     return { hit: [24, 11, 10], top: 10.8, sign };
   });
+  pickables[pickables.length - 1].go = 'nupaLab';   // clicking the building walks inside
 
   // ---- SLIIT University (left, classical) ----
   addBuilding('sliit', -20, -3.5, 0.52, 1.0, (g) => {
@@ -426,8 +429,11 @@ export function buildWorld(scene, { mobile = false } = {}) {
     box('glow', 0xa56bff, 3.9, 6.7, 1.12, 0.09, 2.75, 0.09);
     const sign = plane(g, T.signTexture('labs'), 8.4, 2.1, -0.5, 6.7, 1.14);
     steps(3, 6.5, 3.9, 0.55, 0.15, 0x8a84b0);
+    const bh = new THREE.Mesh(new THREE.BoxGeometry(9.2, 3.0, 1.4), new THREE.MeshBasicMaterial()); bh.visible = false; bh.position.set(-0.5, 6.7, 1.0); g.add(bh);
+    pickables.push({ key: 'labsInfo', mesh: bh, label: 'My Projects Lab · project details', priority: true, sign, anchor: new THREE.Vector3(20, 9, -3.5) });
     return { hit: [14.5, 9.5, 9.4], top: 9.4, sign, gear };
   });
+  pickables[pickables.length - 1].go = 'labsLab';   // clicking the building walks inside
 
   // ════════ PATHS ════════
   const pathSeg = (x1, z1, x2, z2, w, color = 0xa5a2c4) => {

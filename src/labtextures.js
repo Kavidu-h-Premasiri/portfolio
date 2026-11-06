@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { rng } from './textures.js';
 
+import ISLAND from './islandPreview.js';
 const FONT = '"Poppins","Segoe UI",system-ui,Arial,sans-serif';
 const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; };
 const tex = (c, aniso = 4) => { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = aniso; return t; };
@@ -558,5 +559,68 @@ export function nupaPanel(kind) {
     x.fillStyle = '#fff'; x.font = `700 34px ${FONT}`; x.fillText('Site pages', 40, 700);
     x.fillStyle = 'rgba(255,255,255,.85)'; x.font = `500 25px ${FONT}`; ['Home · About · How We Work', 'Cloud Audit · DevOps Retainer', 'Implementation · Blog · Contact'].forEach((t, i) => x.fillText(t, 40, 750 + i * 42));
   }
+  return tex(c, 4);
+}
+
+// ───────── 3D Portfolio Website (My Projects Lab) ─────────
+const pBg = (x, W, H) => nBg(x, W, H, '#1a1040', '#2d1b5e');
+const codeIcon = (x, cx, cy, s, col = '#c9a8ff') => { x.save(); x.strokeStyle = col; x.lineWidth = 9 * s; x.lineCap = 'round'; x.lineJoin = 'round'; x.beginPath(); x.moveTo(cx - 14 * s, cy - 24 * s); x.lineTo(cx - 40 * s, cy); x.lineTo(cx - 14 * s, cy + 24 * s); x.moveTo(cx + 14 * s, cy - 24 * s); x.lineTo(cx + 40 * s, cy); x.lineTo(cx + 14 * s, cy + 24 * s); x.moveTo(cx + 6 * s, cy - 30 * s); x.lineTo(cx - 6 * s, cy + 30 * s); x.stroke(); x.restore(); };
+export function portHeader() {
+  const W = 1400, H = 330, [c, x] = mk(W, H);
+  x.beginPath(); x.moveTo(60, H); x.lineTo(20, 120); x.lineTo(150, 20); x.lineTo(W - 150, 20); x.lineTo(W - 20, 120); x.lineTo(W - 60, H); x.closePath();
+  pBg(x, W, H); x.save(); x.clip(); x.fillStyle = 'rgba(255,255,255,.04)'; for (let i = 0; i < 20; i++) x.fillRect(i * 80, 0, 30, H); x.restore();
+  x.beginPath(); x.moveTo(60, H - 4); x.lineTo(24, 122); x.lineTo(152, 24); x.lineTo(W - 152, 24); x.lineTo(W - 24, 122); x.lineTo(W - 60, H - 4);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 24; x.stroke(); x.shadowBlur = 0;
+  codeIcon(x, 190, 160, 1.5);
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.shadowColor = '#c9a8ff'; x.shadowBlur = 16; x.font = `700 112px ${FONT}`; x.fillText('3D Portfolio Website', W / 2 + 60, 168, 1000);
+  x.shadowBlur = 0; x.font = `600 62px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Interactive 3D World using Three.js', W / 2 + 60, 256, 1000);
+  return tex(c, 4);
+}
+export function portScreen() {
+  const W = 1280, H = 720, [c, x] = mk(W, H);
+  // crazy synthwave backdrop (always visible, even before the screenshot decodes)
+  const sky = x.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#0b0630'); sky.addColorStop(0.55, '#5b1fa8'); sky.addColorStop(1, '#ff4fa3'); x.fillStyle = sky; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#ffd27a'; x.beginPath(); x.arc(W / 2, 400, 170, 0, 7); x.fill(); x.fillStyle = '#ff7ab8'; for (let i = 0; i < 7; i++) x.fillRect(W / 2 - 180, 400 + i * 24, 360, 4 + i * 2);
+  x.fillStyle = '#1a0a46'; x.beginPath(); x.moveTo(0, 460); for (let i = 0; i <= 16; i++) x.lineTo(i * 80, 460 - 60 - (i % 3) * 40 - (i % 5) * 14); x.lineTo(W, 460); x.fill();
+  x.fillStyle = '#12062f'; x.fillRect(0, 460, W, H - 460); x.strokeStyle = '#38e8ff'; x.lineWidth = 2; for (let i = -12; i <= 12; i++) { x.beginPath(); x.moveTo(W / 2 + i * 30, 460); x.lineTo(W / 2 + i * 150, H); x.stroke(); } for (let j = 0; j < 8; j++) { const yy = 460 + Math.pow(j / 8, 2) * 260; x.beginPath(); x.moveTo(0, yy); x.lineTo(W, yy); x.stroke(); }
+  x.fillStyle = 'rgba(56,232,255,.8)'; x.font = `700 26px ${FONT}`; x.textAlign = 'left'; for (let i = 0; i < 40; i++) x.fillText(['</>', '{ }', '01', 'THREE', 'GLSL', '3D'][i % 6], (i * 97) % W, 30 + ((i * 53) % 400));
+  const t = tex(c, 4);
+  const img = new Image(); img.onload = () => {
+    const pw = 1120, ph = 630, px = (W - pw) / 2, py = 52; x.save(); x.shadowColor = '#38e8ff'; x.shadowBlur = 40; x.fillStyle = '#0b0630'; x.fillRect(px - 6, py - 6, pw + 12, ph + 12); x.restore();
+    x.drawImage(img, px, py, pw, ph); x.fillStyle = 'rgba(8,6,28,.82)'; x.fillRect(px, py, pw, 56); x.fillStyle = '#fff'; x.font = `600 22px ${FONT}`; x.fillText('KP  Kavidu_H_Premasiri', px + 22, py + 36); x.font = `500 19px ${FONT}`; x.textAlign = 'right'; ['Home', 'About', 'Education', 'NupaStack', 'Projects'].forEach((n, i) => x.fillText(n, px + pw - 30 - (4 - i) * 118, py + 36)); x.textAlign = 'left';
+    x.strokeStyle = '#a56bff'; x.lineWidth = 5; x.strokeRect(px - 6, py - 6, pw + 12, ph + 12); x.fillStyle = 'rgba(255,255,255,.04)'; for (let y = py; y < py + ph; y += 4) x.fillRect(px, y, pw, 1); t.needsUpdate = true; };
+  img.src = ISLAND; t.needsUpdate = true;
+  return t;
+}
+export function portOverview() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Project Overview', 44, 90);
+  x.fillStyle = 'rgba(255,255,255,.9)'; x.font = `500 29px ${FONT}`;
+  ['A 3D interactive portfolio that', 'represents my education,', 'professional experience and', 'personal projects as a', 'virtual island world.'].forEach((t, i) => x.fillText(t, 44, 150 + i * 42));
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('Tech Stack', 44, 400);
+  const chips = [['Three.js', '#ffffff'], ['JavaScript', '#f7df1e'], ['Tailwind CSS', '#38bdf8'], ['HTML5 / Canvas', '#ff8a5c'], ['WebGL', '#7cd6ff'], ['esbuild', '#ffcf3a']];
+  chips.forEach(([t, col], i) => { const X = 44 + (i % 2) * 320, Y = 430 + Math.floor(i / 2) * 78; x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, Y, 300, 62, 31); x.fill(); x.fillStyle = col; x.beginPath(); x.arc(X + 32, Y + 31, 11, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = `600 25px ${FONT}`; x.fillText(t, X + 56, Y + 40, 235); });
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('Key Features', 44, 730);
+  x.font = `500 29px ${FONT}`;
+  ['Interactive 3D environment', 'Three themed buildings', 'Walk-in project showrooms', 'Smooth camera navigation', 'Responsive on mobile & desktop'].forEach((t, i) => { const Y = 800 + i * 72; x.fillStyle = '#a56bff'; rr(x, 44, Y - 30, 40, 40, 8); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 5; x.beginPath(); x.moveTo(52, Y - 10); x.lineTo(62, Y); x.lineTo(78, Y - 22); x.stroke(); x.fillStyle = '#fff'; x.fillText(t, 104, Y + 4, 580); });
+  return tex(c, 4);
+}
+export function portPlate() {
+  const W = 900, H = 220, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 18; x.strokeRect(10, 10, W - 20, H - 20); x.shadowBlur = 0;
+  x.strokeStyle = '#c9a8ff'; x.lineWidth = 6; x.lineJoin = 'round'; x.beginPath(); x.moveTo(110, 70); x.lineTo(150, 90); x.lineTo(150, 140); x.lineTo(110, 160); x.lineTo(70, 140); x.lineTo(70, 90); x.closePath(); x.moveTo(70, 90); x.lineTo(110, 112); x.lineTo(150, 90); x.moveTo(110, 112); x.lineTo(110, 160); x.stroke();
+  x.fillStyle = '#fff'; x.textAlign = 'left'; x.font = `700 62px ${FONT}`; x.fillText('My 3D Portfolio World', 200, 112, 660); x.font = `500 44px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('(Three.js)', 200, 170);
+  return tex(c, 4);
+}
+export function portPanel(kind) {
+  const W = 640, H = 900, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  const title = (t) => { x.fillStyle = '#fff'; x.font = `700 46px ${FONT}`; x.fillText(t, 40, 84); x.fillStyle = '#ffd27a'; x.fillRect(40, 100, 90, 5); };
+  const rows = kind === 'build'
+    ? [['Rendering', 'Three.js r160 · WebGL · merged geometry'], ['Visuals', 'Canvas-painted textures · glow & mirror floor'], ['Interaction', 'Raycast picking · drag, pinch & wheel camera'], ['UI', 'Tailwind CSS 3.4 · glass panels'], ['Build', 'esbuild bundle · static hosting']]
+    : [['The island', 'Three buildings: SLIIT, NupaStack, My Projects Lab'], ['Showrooms', 'Walk inside each building and explore projects'], ['Project readers', 'Click a laptop to read details with scrolling'], ['Live links', 'Click a 3D model to open the hosted website'], ['Everywhere', 'Works on desktop, tablet and phone']];
+  title(kind === 'build' ? 'How it is built' : 'What you can do');
+  rows.forEach(([h, t], i) => { const Y = 170 + i * 135; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 36, Y - 40, W - 72, 112, 18); x.fill(); x.fillStyle = '#ffd27a'; x.font = `700 26px ${FONT}`; x.fillText(h, 58, Y); x.fillStyle = '#fff'; x.font = `500 23px ${FONT}`; x.fillText(t, 58, Y + 44, W - 110); });
   return tex(c, 4);
 }

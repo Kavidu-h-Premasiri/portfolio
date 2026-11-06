@@ -310,7 +310,10 @@ function labPick(x, y) {
   v2.set((x / innerWidth) * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(v2, camera);
   return lab.pick(ray);
 }
-function openSite(pr) { if (pr && pr.href) window.open(pr.href, '_blank', 'noopener'); }
+function openSite(pr) {
+  if (pr && pr.href) { window.open(pr.href, '_blank', 'noopener'); return; }
+  if (pr) { tip.textContent = 'Live website link coming soon'; tip.style.transform = `translate(${ptr.x + 16}px, ${ptr.y + 14}px)`; tip.classList.remove('opacity-0'); setTimeout(() => tip.classList.add('opacity-0'), 1800); }
+}
 function labClick(x, y) {
   const kind = labPick(x, y), pr = projectFor(lab.rooms[lab.current].key);
   if (kind === 'laptop') { hideCard(); openReader(pr); }

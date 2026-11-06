@@ -295,6 +295,61 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
   };
 
 
+  // ═════════ 3D Portfolio Website (My Projects Lab) ═════════
+  const mkPortfolio = () => {
+    const { B, k, g } = mk(), picks = [], Y = 1.1;
+    const edge = (x, y, z, w, h, c = 0xa56bff) => { k.box('glow', c, x, y + h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x, y - h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x - w / 2, y, z, 0.08, h, 0.1); k.box('glow', c, x + w / 2, y, z, 0.08, h, 0.1); };
+    // podium
+    k.cyl('lit', 0x1a1640, 0, 0.5, 0, 8.4, 1.0, 1, 0.8); k.cyl('lit', 0x2c2a62, 0, Y - 0.04, 0, 8.0, 0.1, 1, 0.8);
+    for (const [r, y, c] of [[8.4, 0.95, 0xa56bff], [8.4, 0.3, 0x48b8ff], [9.0, 0.1, 0xffb348]]) B.add('glow', new THREE.TorusGeometry(r, 0.09, 6, 90).rotateX(Math.PI / 2), c, { x: 0, y, z: 0, sz: 0.8 });
+    // back wall: lab sign tower, big screen, overview panel, header
+    k.box('lit', 0x1c1b4a, -6.1, Y + 2.0, -2.7, 4.6, 4.2, 0.8); g.add(plane(TH.sign, 4.2, 2.1, -6.1, Y + 2.0, -2.28, 0, { transparent: false })); edge(-6.1, Y + 2.0, -2.22, 4.2, 2.1);
+    k.box('lit', 0x161b4a, 0.5, Y + 4.1, -3.3, 8.6, 6.9, 0.6); g.add(plane(L.portScreen(), 7.6, 4.275, 0.5, Y + 4.2, -2.98, 0, { transparent: false })); edge(0.5, Y + 4.2, -2.94, 7.6, 4.275, 0x6fb0ff);
+    k.box('lit', 0x1c1b4a, 6.6, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.portOverview(), 3.9, 6.4, 6.6, Y + 3.7, -2.28, 0, { transparent: false })); edge(6.6, Y + 3.7, -2.22, 3.9, 6.4);
+    g.add(plane(L.portHeader(), 9.6, 2.26, 0.5, Y + 8.6, -3.1)); k.box('glow', 0xc9a8ff, 0.5, Y + 7.5, -3.0, 6.6, 0.07, 0.07);
+    // miniature island – its own rotatable group (drag it, or let it turn slowly)
+    const ix = -0.4, iy = Y + 0.04, iz = 2.4;
+    const isl = new THREE.Group(); isl.position.set(ix, iy, iz); isl.userData.anim = { type: 'bld' };
+    { const Bi = new Batch(), ki = kit(Bi, rand);
+      ki.cyl('lit', 0x6b6a7a, 0, 0.3, 0, 4.1, 0.6); ki.cyl('lit', 0x4f9a3e, 0, 0.66, 0, 3.95, 0.14); ki.tor('glow', 0x48b8ff, 4.1, 0.07, 0, 0.3, 0);
+      ki.cyl('lit', 0x3a7bd0, 1.5, 0.74, 2.2, 0.9, 0.06, 1, 0.7); ki.cyl('lit', 0x3a7bd0, -2.0, 0.74, 2.3, 0.8, 0.06, 1, 0.7);
+      ki.cyl('lit', 0xcfc4dc, 0, 0.76, 0.6, 1.2, 0.08); ki.tor('glow', 0x48e0ff, 0.9, 0.05, 0, 0.84, 0.6); ki.cyl('glow', 0x48e0ff, 0, 1.2, 0.6, 0.12, 0.7);
+      // SLIIT (left, cream), NupaStack (back, navy), Labs (right, purple)
+      ki.box('lit', 0xe9dcc4, -2.2, 1.3, -0.4, 1.7, 1.2, 1.0, 0.5); ki.box('lit', 0x2a3a78, -2.2, 1.95, -0.4, 1.9, 0.14, 1.2, 0.5); for (let i = 0; i < 4; i++) ki.cyl('lit', 0xf4eee0, -2.8 + i * 0.4 + 0.12, 1.3, 0.15 - i * 0.2, 0.05, 1.1);
+      ki.box('lit', 0x1f2a5e, 0, 1.55, -1.7, 2.6, 1.8, 1.1); ki.box('glow', 0xffc66a, 0, 1.5, -1.12, 2.2, 1.0, 0.04); ki.box('lit', 0x25306e, 0, 2.55, -1.7, 2.8, 0.14, 1.3); ki.box('glow', 0x48b8ff, 0, 2.66, -1.05, 1.0, 0.3, 0.05);
+      ki.box('lit', 0x2c1f66, 2.3, 1.3, -0.3, 1.8, 1.2, 1.1, -0.5); ki.box('glow', 0xa56bff, 2.3, 1.2, 0.25, 1.4, 0.7, 0.04, -0.5); ki.box('lit', 0x3a2a84, 2.3, 2.0, -0.3, 2.0, 0.14, 1.3, -0.5); ki.box('glow', 0xc9a8ff, 2.15, 2.4, 0.2, 0.9, 0.3, 0.05, -0.5);
+      for (const [tx, tz, s] of [[-3.1, 1.1, 1], [3.2, 1.3, 1.1], [-1.1, 2.9, 0.8], [3.0, -1.6, 0.9], [-3.2, -1.3, 0.85]]) { ki.cone('lit', 0x6a4528, tx, 0.7 + 0.35 * s, tz, 0.09 * s, 0.7 * s); for (let i = 0; i < 4; i++) { const a = rand() * 6.28, r = rand() * 0.3; ki.ico('lit', [0xf08acb, 0xd47ae8, 0xffb0dd][i % 3], tx + Math.cos(a) * r, 0.7 + (0.8 + rand() * 0.3) * s, tz + Math.sin(a) * r, 0.3 * s, 0.85); } }
+      isl.add(Bi.build('lit', lit()), Bi.build('glow', glow())); }
+    g.add(isl);
+    const kpS = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0x48e0ff, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false })); kpS.scale.set(3, 3, 1); kpS.position.set(ix, iy + 1.9, iz + 0.6); g.add(kpS);
+    const ihit = new THREE.Mesh(new THREE.CylinderGeometry(4.1, 4.1, 3.6, 18), new THREE.MeshBasicMaterial()); ihit.visible = false; ihit.position.set(ix, iy + 1.5, iz); ihit.userData.kind = 'bld'; g.add(ihit); picks.push(ihit);
+    // name plate on the podium front
+    g.add(plane(L.portPlate(), 4.6, 1.12, ix, Y + 0.45, 7.55, 0)); edge(ix, Y + 0.45, 7.58, 4.6, 1.12);
+    // creative fill: floating tool cubes, code rings, server rack, plants
+    const anim = (o, a) => { o.userData.anim = a; return o; };
+    [[0xffffff, -8.8, 9.6], [0x38bdf8, -7.2, 10.6], [0xf7df1e, 8.0, 10.6], [0xff8a5c, 9.4, 9.6]].forEach(([c, x, y], i) => {
+      const cu = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.9), new THREE.MeshBasicMaterial({ color: c, toneMapped: false })); cu.position.set(x, Y + y - 1.2, -1.0); cu.userData.y0 = cu.position.y; anim(cu, { type: 'spin', sp: 0.6 + i * 0.1, bob: 0.25, ph: i }); g.add(cu); });
+    { const lp = new THREE.Group(); const gm = new THREE.MeshBasicMaterial({ color: 0xa56bff, toneMapped: false }); for (let i = 0; i < 3; i++) { const t = new THREE.Mesh(new THREE.TorusGeometry(1.0 - i * 0.28, 0.07, 8, 40), gm); lp.add(t); }
+      lp.position.set(-13.4, Y + 7.2, 2.4); lp.userData.y0 = lp.position.y; anim(lp, { type: 'spin', sp: 0.8, bob: 0.3 }); g.add(lp);
+      const gl2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xa56bff, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false })); gl2.scale.set(6, 4, 1); gl2.position.set(-13.4, Y + 7.2, 2.2); g.add(gl2); }
+    { const bk = new THREE.Group(); const m1 = new THREE.MeshBasicMaterial({ color: 0xc9a8ff, toneMapped: false }); for (const [sx, a] of [[-0.9, 1], [0.9, -1]]) { const a1 = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.3, 0.28), m1); a1.position.set(sx * 1.05, 0.45, 0); a1.rotation.z = -a * 0.6; const a2 = a1.clone(); a2.position.y = -0.45; a2.rotation.z = a * 0.6; bk.add(a1, a2); } bk.position.set(13.8, Y + 7.2, 2.2); bk.userData.y0 = bk.position.y; anim(bk, { type: 'spin', sp: 0.7, bob: 0.3 }); g.add(bk); }
+    for (const [px, pz, ry, kind] of [[-10.8, 7.4, 0.5, 'build'], [14.6, 1.0, -0.5, 'does']]) {
+      k.cyl('lit', 0x2c2a62, px, Y + 0.2, pz, 0.9, 0.4); k.cyl('lit', 0x4a5aa0, px, Y + 1.3, pz, 0.1, 2.2); g.add(plane(L.portPanel(kind), 2.6, 3.65, px, Y + 3.6, pz, ry, { transparent: false }));
+      k.local(px, Y + 3.6, pz, ry, () => { const w = 2.6, h = 3.65; k.box('glow', 0xa56bff, 0, h / 2, 0.02, w + 0.14, 0.07, 0.05); k.box('glow', 0xa56bff, 0, -h / 2, 0.02, w + 0.14, 0.07, 0.05); k.box('glow', 0xa56bff, -w / 2, 0, 0.02, 0.07, h, 0.05); k.box('glow', 0xa56bff, w / 2, 0, 0.02, 0.07, h, 0.05); }); }
+    for (const [rx, rz, ry] of [[-12.8, -1.8, 0.35]]) k.local(rx, 0, rz, ry, () => { k.box('lit', 0x1b1f4f, 0, Y + 1.7, 0, 1.5, 3.4, 1.1); for (let i = 0; i < 6; i++) { k.box('lit', 0x0e1233, 0, Y + 0.5 + i * 0.5, 0.57, 1.3, 0.36, 0.05); k.box('glow', i % 2 ? 0x48b8ff : 0xa56bff, -0.5, Y + 0.5 + i * 0.5, 0.61, 0.08, 0.08, 0.03); k.box('glow', 0xc9a8ff, 0.15, Y + 0.5 + i * 0.5, 0.61, 0.5, 0.05, 0.03); } });
+    for (const [fx, fz] of [[-9.0, 4.4], [12.0, 4.6], [6.0, 8.2]]) { k.cyl('lit', 0x2c2a62, fx, Y + 0.3, fz, 0.5, 0.6); for (let i = 0; i < 6; i++) { const a = i * 1.05; k.cone('lit', 0x3fcf9a, fx + Math.cos(a) * 0.18, Y + 0.95, fz + Math.sin(a) * 0.18, 0.14, 0.9 + (i % 3) * 0.2, Math.cos(a) * 0.35, -Math.sin(a) * 0.35); } }
+    // banners + chandelier + cove (lab colours)
+    for (const [x, t] of [[-14.2, 0.18], [-11.6, 0.18], [11.6, -0.18], [14.2, -0.18]]) g.add(plane(TH.banner, 2.4, 7.2, x, 8.6, -5.5, t));
+    k.tor('glow', 0xffffff, 6.2, 0.18, 0, 11.6, -1); k.tor('glow', 0xc9a8ff, 5.0, 0.1, 0, 11.0, -1);
+    for (const [w, d, x, z] of [[32, 0.14, 0, -12], [32, 0.14, 0, 8], [0.14, 20, -16, -2], [0.14, 20, 16, -2]]) k.box('glow', TH.cove, x, 12.9, z, w, 0.14, d);
+    const dk = desk(g, k, { x: 9.6, z: 6.4, ry: -0.5, title: '3D Portfolio Website', accent: '#a890ff', accentHex: 0xa56bff }); picks.push(dk.hit);
+    g.add(B.build('lit', lit()), B.build('glow', glow()));
+    const hover = hoverRing(8.4, 0.95, 0xb9a4ff); hover.scale.z = 0.8; g.add(hover);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(8.4, 8.4, 9, 14).scale(1, 1, 0.8), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
+    const grp = mirrored(g), anims = []; grp.traverse((o) => { if (o.userData.anim) anims.push(o); });
+    return { key: 'portfolio', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
+  };
+
   // ═════════ NupaStack Website – 3D Enhancement ═════════
   const mkNupa = () => {
     const { B, k, g } = mk(), picks = [], Y = 0.92;
@@ -367,7 +422,7 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
     return { key: 'nupa', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
   };
 
-  const rooms = theme === 'nupa' ? [mkNupa()] : [mkPreschool(), mkAvurudu()];
+  const rooms = theme === 'nupa' ? [mkNupa()] : [mkPreschool(), mkAvurudu(), mkPortfolio()];
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
   let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;
