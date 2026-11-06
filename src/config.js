@@ -113,10 +113,11 @@ export const CONFIG = {
           ],
           stack: ['React', 'CSS', 'Node.js', 'MongoDB', 'Docker', 'AWS (basic hands-on)', 'Vercel', 'Railway'],
         },
-        { title: 'Randu Salon Website' },
         {
           title: 'TaskFlow – Full-Stack Team Collaboration & Task Management System',
+          room: 'taskflow',
           year: '2026',
+          href: '', // not hosted yet
           bullets: [
             'Collaborative full-stack task management web app using React, TypeScript and Tailwind CSS on the frontend and Go (Golang) on the backend, with real-time team messaging and role-based access control (Admin/Member).',
             'Secure Go backend using Gin and GORM with PostgreSQL, Amazon S3 for profile media and file attachments, and an automated AWS CI/CD pipeline with CodePipeline and Docker for seamless cloud deployments.',
@@ -149,7 +150,21 @@ export const CONFIG = {
           ],
           stack: ['Three.js r160', 'JavaScript (ES Modules)', 'WebGL', 'Tailwind CSS', 'HTML5 Canvas', 'esbuild'],
         },
-        { title: 'Poker Game Website' },
+        {
+          title: 'Poker Game Website – Fish & Chips Poker (Reef Royale)',
+          room: 'poker',
+          year: '2026',
+          bullets: [
+            'Full-stack ocean-themed poker web app with five variants – Texas Hold\'em, Omaha, Seven-Card Stud, Five-Card Draw and Razz – with no-limit betting, side pots and split-pot rules implemented.',
+            'Seven AI opponents from beginner to GTO "shark" level that estimate their winning chances with Monte-Carlo simulation and decide using pot odds, with different bluffing and bet-sizing styles.',
+            'Fish-chip currency, a 41-level fish rank ladder and a loss-recovery system: a 10-question quiz from the Fish Game API returns 10–50% of lost chips, and a bankruptcy bailout keeps the player in the game.',
+          ],
+          details: [
+            { heading: 'Key features', items: ['Sign in / sign up with server-side sessions', 'Lobby, poker table, leaderboard and hand history', 'Fish ranks with XP and rank-up chip bonuses', 'Quiz arcade, how-to-play guide and avatar profiles', 'Responsive table for phones, tablets and desktops'] },
+            { heading: 'How it is built', text: 'React 18 + TypeScript + Vite + Tailwind CSS on the client, a Node.js / Express / TypeScript API with Zod validation, bcrypt and PostgreSQL-backed sessions, and the Marc Conrad Fish Game API for the recovery quizzes.' },
+          ],
+          stack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'PostgreSQL', 'Docker', 'Fish Game API'],
+        },
       ],
       buttons: [{ label: 'Enter the 3D Lab →', action: 'lab' }, { label: 'More on GitHub', href: 'github' }],
     },

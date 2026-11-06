@@ -624,3 +624,134 @@ export function portPanel(kind) {
   rows.forEach(([h, t], i) => { const Y = 170 + i * 135; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 36, Y - 40, W - 72, 112, 18); x.fill(); x.fillStyle = '#ffd27a'; x.font = `700 26px ${FONT}`; x.fillText(h, 58, Y); x.fillStyle = '#fff'; x.font = `500 23px ${FONT}`; x.fillText(t, 58, Y + 44, W - 110); });
   return tex(c, 4);
 }
+
+// ───────── TaskFlow (My Projects Lab) ─────────
+const tfLogo = (x, cx, cy, s) => { // rounded gradient tile with a white check mark
+  x.save(); x.translate(cx, cy); x.scale(s, s);
+  const g = x.createLinearGradient(-40, -40, 40, 40); g.addColorStop(0, '#7c5cff'); g.addColorStop(1, '#b66bff'); x.fillStyle = g; rr(x, -40, -40, 80, 80, 20); x.fill();
+  x.strokeStyle = '#fff'; x.lineWidth = 11; x.lineCap = 'round'; x.lineJoin = 'round'; x.beginPath(); x.moveTo(-18, 2); x.lineTo(-4, 17); x.lineTo(22, -18); x.stroke(); x.restore();
+};
+const tfCheck = (x, X, Y, col = '#a56bff') => { x.fillStyle = col; rr(x, X, Y - 30, 40, 40, 10); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 5; x.lineCap = 'round'; x.lineJoin = 'round'; x.beginPath(); x.moveTo(X + 9, Y - 10); x.lineTo(X + 18, Y); x.lineTo(X + 32, Y - 22); x.stroke(); };
+export function tfHeader() {
+  const W = 1400, H = 330, [c, x] = mk(W, H);
+  x.beginPath(); x.moveTo(60, H); x.lineTo(20, 120); x.lineTo(150, 20); x.lineTo(W - 150, 20); x.lineTo(W - 20, 120); x.lineTo(W - 60, H); x.closePath();
+  pBg(x, W, H); x.save(); x.clip(); x.fillStyle = 'rgba(255,255,255,.04)'; for (let i = 0; i < 20; i++) x.fillRect(i * 80, 0, 30, H); x.restore();
+  x.beginPath(); x.moveTo(60, H - 4); x.lineTo(24, 122); x.lineTo(152, 24); x.lineTo(W - 152, 24); x.lineTo(W - 24, 122); x.lineTo(W - 60, H - 4);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 24; x.stroke(); x.shadowBlur = 0;
+  tfLogo(x, 230, 160, 2.3);
+  x.textAlign = 'left'; x.fillStyle = '#fff'; x.shadowColor = '#c9a8ff'; x.shadowBlur = 16; x.font = `700 132px ${FONT}`; x.fillText('TaskFlow', 370, 190, 760);
+  x.shadowBlur = 0; x.font = `600 46px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Team Collaboration & Task Management', 372, 256, 860);
+  return tex(c, 4);
+}
+export function tfScreen() {
+  const W = 1280, H = 720, [c, x] = mk(W, H);
+  nBg(x, W, H, '#14103a', '#2d1b66'); x.textAlign = 'left';
+  x.fillStyle = 'rgba(255,255,255,.07)'; x.fillRect(0, 0, 150, H);
+  for (let i = 0; i < 5; i++) { x.fillStyle = i === 0 ? '#a56bff' : 'rgba(255,255,255,.18)'; rr(x, 50, 120 + i * 90, 50, 50, 14); x.fill(); }
+  tfLogo(x, 75, 62, 0.8);
+  x.fillStyle = '#fff'; x.font = `700 54px ${FONT}`; x.fillText('TaskFlow', 190, 80); x.font = `500 26px ${FONT}`; x.fillStyle = '#c9b8ff'; x.fillText('Project board · Admin / Member roles', 190, 122);
+  const cols = [['To Do', '#ff9a5c', 3], ['In Progress', '#6fa8ff', 2], ['Done', '#3fcf9a', 3]];
+  cols.forEach(([t, col, n], i) => {
+    const X = 190 + i * 355, Y = 160;
+    x.fillStyle = 'rgba(255,255,255,.07)'; rr(x, X, Y, 330, 520, 22); x.fill();
+    x.fillStyle = col; rr(x, X, Y, 330, 64, 22); x.fill(); x.fillStyle = '#fff'; x.font = `700 32px ${FONT}`; x.fillText(t, X + 26, Y + 43);
+    for (let j = 0; j < n; j++) { const cy = Y + 86 + j * 142; x.fillStyle = 'rgba(255,255,255,.92)'; rr(x, X + 16, cy, 298, 122, 16); x.fill();
+      x.fillStyle = col; rr(x, X + 34, cy + 22, 130, 14, 7); x.fill(); x.fillStyle = '#cfc8e8'; rr(x, X + 34, cy + 52, 240, 12, 6); x.fill(); rr(x, X + 34, cy + 76, 170, 12, 6); x.fill();
+      x.fillStyle = i === 2 ? '#3fcf9a' : '#a56bff'; x.beginPath(); x.arc(X + 282, cy + 98, 13, 0, 7); x.fill(); }
+  });
+  return tex(c, 4);
+}
+export function tfInfo() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  tfLogo(x, 90, 100, 1.0); x.fillStyle = '#fff'; x.font = `700 62px ${FONT}`; x.fillText('TaskFlow', 150, 122);
+  x.font = `600 31px ${FONT}`; x.fillStyle = '#e9e1ff'; ['Full-Stack Team Collaboration', '& Task Management System'].forEach((t, i) => x.fillText(t, 44, 215 + i * 42));
+  x.font = `500 28px ${FONT}`; x.fillStyle = 'rgba(255,255,255,.9)';
+  ['A collaborative web application for', 'managing tasks, teams and', 'communication with role-based', 'access (Admin / Member) and', 'real-time messaging.'].forEach((t, i) => x.fillText(t, 44, 345 + i * 40));
+  x.font = `600 29px ${FONT}`;
+  ['Task & Project Management', 'Real-time Team Messaging', 'Role-Based Access Control', 'File Attachments (AWS S3)', 'CI/CD & Cloud Deployment'].forEach((t, i) => { const Y = 640 + i * 100; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 34, Y - 44, W - 68, 78, 20); x.fill(); tfCheck(x, 56, Y + 4); x.fillStyle = '#fff'; x.fillText(t, 116, Y + 4, 560); });
+  return tex(c, 4);
+}
+export function tfStack() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  x.fillStyle = '#ffd27a'; rr(x, 44, 44, 190, 70, 18); x.fill(); x.fillStyle = '#1a1040'; x.font = `700 44px ${FONT}`; x.fillText('2026', 78, 94);
+  codeIcon(x, 90 + 560, 80, 0.8);
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Tech Stack', 44, 200);
+  const chips = [['React', '#61dafb'], ['TypeScript', '#3b82f6'], ['Go (Golang)', '#38e0ff'], ['PostgreSQL', '#7aa7ff'], ['AWS S3 / CodePipeline', '#ff9a3c'], ['Docker', '#2f9bff'], ['Tailwind CSS', '#38bdf8'], ['Git', '#ff6a4d'], ['Docker Hub', '#5ab0ff']];
+  chips.forEach(([t, col], i) => { const full = i === 4, X = full ? 44 : 44 + (i < 4 ? i % 2 : (i - 5) % 2) * 320, row = i < 4 ? Math.floor(i / 2) : i === 4 ? 2 : 3 + Math.floor((i - 5) / 2), Y = 235 + row * 82, w = full ? 620 : 300;
+    x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, Y, w, 64, 32); x.fill(); x.fillStyle = col; x.beginPath(); x.arc(X + 32, Y + 32, 11, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = `600 25px ${FONT}`; x.fillText(t, X + 56, Y + 41, w - 70); });
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('Backend', 44, 750);
+  x.font = `500 28px ${FONT}`; x.fillStyle = 'rgba(255,255,255,.9)';
+  ['Go with Gin and GORM on PostgreSQL', 'Amazon S3 for profile media', 'and file attachments', 'AWS CodePipeline + Docker', 'automated CI/CD deployments'].forEach((t, i) => x.fillText(t, 44, 805 + i * 42));
+  return tex(c, 4);
+}
+export function tfPlate() {
+  const W = 900, H = 220, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 18; x.strokeRect(10, 10, W - 20, H - 20); x.shadowBlur = 0;
+  tfLogo(x, 120, 110, 1.35);
+  x.fillStyle = '#fff'; x.textAlign = 'left'; x.font = `700 76px ${FONT}`; x.fillText('TaskFlow', 215, 112, 640); x.font = `500 40px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Team Task Management', 217, 172, 640);
+  return tex(c, 4);
+}
+
+// ───────── Fish and Chips Poker (My Projects Lab + SLIIT) ─────────
+const pkFish = (x, cx, cy, s, col = '#3aa8ff') => { // little fish mark
+  x.save(); x.translate(cx, cy); x.scale(s, s); x.fillStyle = col;
+  x.beginPath(); x.ellipse(0, 0, 38, 24, 0, 0, 7); x.fill();
+  x.beginPath(); x.moveTo(30, 0); x.lineTo(58, -22); x.lineTo(58, 22); x.closePath(); x.fill();
+  x.fillStyle = '#fff'; x.beginPath(); x.arc(-18, -6, 6, 0, 7); x.fill(); x.fillStyle = '#10204a'; x.beginPath(); x.arc(-19, -6, 3, 0, 7); x.fill(); x.restore();
+};
+const pkSuit = (x, ch, cx, cy, s, col) => { x.fillStyle = col; x.font = `700 ${s}px ${FONT}`; x.textAlign = 'center'; x.fillText(ch, cx, cy); };
+export function pkHeader() {
+  const W = 1400, H = 330, [c, x] = mk(W, H);
+  x.beginPath(); x.moveTo(60, H); x.lineTo(20, 120); x.lineTo(150, 20); x.lineTo(W - 150, 20); x.lineTo(W - 20, 120); x.lineTo(W - 60, H); x.closePath();
+  pBg(x, W, H); x.save(); x.clip(); x.fillStyle = 'rgba(255,255,255,.04)'; for (let i = 0; i < 20; i++) x.fillRect(i * 80, 0, 30, H); x.restore();
+  x.beginPath(); x.moveTo(60, H - 4); x.lineTo(24, 122); x.lineTo(152, 24); x.lineTo(W - 152, 24); x.lineTo(W - 24, 122); x.lineTo(W - 60, H - 4);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 24; x.stroke(); x.shadowBlur = 0;
+  pkFish(x, 230, 170, 2.2); pkSuit(x, '♠', 1190, 120, 70, '#ffd27a'); pkSuit(x, '♥', 1270, 120, 70, '#ff6a8a'); pkSuit(x, '♣', 1190, 220, 70, '#ffd27a'); pkSuit(x, '♦', 1270, 220, 70, '#ff6a8a');
+  x.textAlign = 'left'; x.fillStyle = '#ffd27a'; x.shadowColor = '#ffb040'; x.shadowBlur = 16; x.font = `700 96px ${FONT}`; x.fillText('Fish and Chips', 360, 160, 780);
+  x.fillStyle = '#fff'; x.font = `700 118px ${FONT}`; x.fillText('Poker', 360, 262, 780);
+  x.shadowBlur = 0; x.font = `600 36px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Reef Royale Edition', 780, 250, 380);
+  return tex(c, 4);
+}
+export function pkScreen() {
+  const W = 1280, H = 720, [c, x] = mk(W, H);
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0b2a6a'); g.addColorStop(1, '#0a1a48'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = 'rgba(120,200,255,.25)'; for (let i = 0; i < 18; i++) { x.beginPath(); x.arc((i * 211) % W, 80 + (i * 137) % 600, 8 + (i % 4) * 5, 0, 7); x.fill(); }
+  x.textAlign = 'left'; pkFish(x, 70, 56, 0.7); x.fillStyle = '#ffd27a'; x.font = `700 34px ${FONT}`; x.fillText('Fish and Chips Poker', 150, 68);
+  x.fillStyle = 'rgba(255,255,255,.12)'; rr(x, 940, 30, 220, 52, 26); x.fill(); x.fillStyle = '#ffd23a'; x.beginPath(); x.arc(970, 56, 14, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = `700 28px ${FONT}`; x.fillText('75,000', 998, 66);
+  x.save(); x.shadowColor = '#000'; x.shadowBlur = 30; x.fillStyle = '#3a2a6a'; x.beginPath(); x.ellipse(640, 380, 480, 235, 0, 0, 7); x.fill(); x.restore();
+  const tg = x.createRadialGradient(640, 380, 40, 640, 380, 430); tg.addColorStop(0, '#1fa59a'); tg.addColorStop(1, '#0d6a70'); x.fillStyle = tg; x.beginPath(); x.ellipse(640, 380, 450, 210, 0, 0, 7); x.fill();
+  const cards = [['A', '♠', '#111'], ['K', '♦', '#d02a44'], ['Q', '♠', '#111'], ['J', '♥', '#d02a44'], ['10', '♠', '#111']];
+  cards.forEach(([r, s, col], i) => { const X = 440 + i * 84; x.fillStyle = '#fff'; rr(x, X, 320, 72, 100, 8); x.fill(); x.fillStyle = col; x.textAlign = 'center'; x.font = `700 34px ${FONT}`; x.fillText(r, X + 36, 366); x.font = `700 32px ${FONT}`; x.fillText(s, X + 36, 404); });
+  x.fillStyle = '#fff'; x.font = `600 26px ${FONT}`; x.fillText('Pot: 24,000', 640, 470);
+  [['AI - Pro', '12,500', 640, 150], ['AI - Pro', '12,500', 250, 250], ['AI - Aggressive', '15,000', 1030, 250], ['AI - Defensive', '10,800', 270, 460], ['AI - Defensive', '15,000', 1010, 470], ['You', '28,500', 640, 560]].forEach(([n, ch, px, py]) => {
+    x.fillStyle = 'rgba(8,14,50,.9)'; rr(x, px - 100, py - 28, 200, 58, 18); x.fill(); x.fillStyle = '#4aa8ff'; x.beginPath(); x.arc(px - 72, py + 1, 20, 0, 7); x.fill();
+    x.textAlign = 'left'; x.fillStyle = '#fff'; x.font = `700 20px ${FONT}`; x.fillText(n, px - 44, py - 2); x.fillStyle = '#ffd27a'; x.font = `600 20px ${FONT}`; x.fillText(ch, px - 44, py + 22); });
+  [['Fold', '#e0405a', 330], ['Call 8,000', '#2f8bff', 530], ['Raise', '#9a5cff', 730]].forEach(([t, col, bx]) => { x.fillStyle = col; rr(x, bx, 630, 170, 56, 14); x.fill(); x.fillStyle = '#fff'; x.textAlign = 'center'; x.font = `700 26px ${FONT}`; x.fillText(t, bx + 85, 667); });
+  return tex(c, 4);
+}
+export function pkInfo() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  pkFish(x, 90, 90, 1.0); x.fillStyle = '#fff'; x.font = `700 50px ${FONT}`; x.fillText('Fish and Chips', 170, 84); x.fillText('Poker', 170, 138);
+  x.fillStyle = 'rgba(255,255,255,.9)'; x.font = `500 27px ${FONT}`;
+  ['A themed poker game with multiple', 'poker variants, AI players, fish coins,', 'player ranks and a knowledge', 'challenge reward system.'].forEach((t, i) => x.fillText(t, 44, 215 + i * 38));
+  ["Texas Hold'em", 'Omaha Poker', 'Seven-Card Stud', 'Five-Card Draw', 'Razz Poker', '7 AI Player Skills', 'Quiz Reward Recovery'].forEach((t, i) => { const Y = 440 + i * 100; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 34, Y - 44, W - 68, 78, 20); x.fill(); tfCheck(x, 56, Y + 4); x.fillStyle = '#fff'; x.font = `600 31px ${FONT}`; x.fillText(t, 116, Y + 4, 540); });
+  return tex(c, 4);
+}
+export function pkStack() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(165,107,255,.8)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Tech Stack', 44, 84);
+  [['React', '#61dafb'], ['TypeScript', '#3b82f6'], ['Node.js', '#6cc24a'], ['Tailwind CSS', '#38bdf8'], ['PostgreSQL', '#7aa7ff'], ['Express', '#d9ccff']].forEach(([t, col], i) => { const X = 44 + (i % 2) * 320, Y = 115 + Math.floor(i / 2) * 78; x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, Y, 300, 62, 31); x.fill(); x.fillStyle = col; x.beginPath(); x.arc(X + 32, Y + 31, 11, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = `600 25px ${FONT}`; x.fillText(t, X + 56, Y + 40, 235); });
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Key Highlights', 44, 440);
+  ['Multiple Poker Game Modes', 'Offline Play (Local AI Players)', 'Fish Coins & Rank System', 'Quiz Challenge Reward', 'Full-Stack (Frontend + Backend)', 'PostgreSQL Data Storage'].forEach((t, i) => { const Y = 520 + i * 100; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 34, Y - 44, W - 68, 78, 20); x.fill(); tfCheck(x, 56, Y + 4); x.fillStyle = '#fff'; x.font = `600 28px ${FONT}`; x.fillText(t, 116, Y + 4, 560); });
+  return tex(c, 4);
+}
+export function pkPlate() {
+  const W = 900, H = 220, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 10; x.shadowColor = '#a56bff'; x.shadowBlur = 18; x.strokeRect(10, 10, W - 20, H - 20); x.shadowBlur = 0;
+  pkFish(x, 110, 112, 1.5); x.fillStyle = '#ffd27a'; x.textAlign = 'left'; x.font = `700 62px ${FONT}`; x.fillText('Fish and Chips Poker', 215, 112, 650); x.font = `500 40px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Reef Royale Edition', 217, 172, 640);
+  return tex(c, 4);
+}

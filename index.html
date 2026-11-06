@@ -6,11 +6,12 @@
   <title>Kavidu_H_Premasiri – 3D Portfolio</title>
   <meta name="description" content="Kavidu_H_Premasiri – Software Engineering Intern. Interactive 3D portfolio: SLIIT University, NupaStack and My Projects Lab.">
   <meta name="theme-color" content="#2a1450">
+  <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=7">
-  <link rel="preload" href="js/app.js?v=7" as="script">
+  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="preload" href="js/app.js?v=15" as="script">
 </head>
 <body class="overflow-hidden bg-[#2a1450] font-sans text-white antialiased">
 
@@ -19,7 +20,7 @@
 
   <!-- Loader -->
   <div id="loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-gradient-to-b from-[#1b1040] via-[#4a2275] to-[#d9608f] transition-opacity duration-700">
-    <div class="grid h-24 w-24 place-items-center rounded-full border border-cyan-300/60 bg-cyan-300/10 text-3xl font-bold text-cyan-200 shadow-[0_0_40px_rgba(34,211,238,.5)] animate-pulse">KP</div>
+    <img src="assets/logo.png" alt="KP logo" class="h-24 w-24 rounded-3xl object-contain shadow-[0_0_40px_rgba(168,144,255,.55)] animate-pulse">
     <p id="loader-text" class="px-6 text-center text-sm text-white/80">Building the 3D island…</p>
     <div id="loader-bar" class="h-1.5 w-56 overflow-hidden rounded-full bg-white/15"><div id="loader-fill" class="h-full w-0 rounded-full bg-cyan-300 transition-all duration-500"></div></div>
   </div>
@@ -27,7 +28,7 @@
   <!-- Top bar -->
   <header class="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between p-4 sm:p-6">
     <button data-view="home" class="glass pointer-events-auto flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-4 transition hover:bg-white/10" aria-label="Home">
-      <span class="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-cyan-300 to-blue-500 text-sm font-bold text-[#0b1230]">KP</span>
+      <img src="assets/logo.png" alt="KP" class="h-9 w-9 rounded-xl object-contain">
       <span class="hidden whitespace-nowrap text-sm font-semibold lg:block" data-name>Kavidu_H_Premasiri</span>
     </button>
     <nav class="glass pointer-events-auto hidden items-center gap-1 rounded-full p-1.5 md:flex" aria-label="Main">
@@ -100,6 +101,6 @@
   </aside>
 
   <noscript><p class="fixed inset-0 z-[60] grid place-items-center bg-[#1b1040] p-8 text-center">Please enable JavaScript to view the 3D portfolio.</p></noscript>
-  <script src="js/app.js?v=7" defer></script>
+  <script src="js/app.js?v=15" defer></script>
 </body>
 </html>

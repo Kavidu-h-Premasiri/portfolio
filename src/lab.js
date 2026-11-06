@@ -422,7 +422,148 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
     return { key: 'nupa', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
   };
 
-  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkAvurudu()] : [mkPreschool(), mkAvurudu(), mkPortfolio()];
+  // ═════════ TaskFlow (My Projects Lab) ═════════
+  const mkTaskflow = () => {
+    const { B, k, g } = mk(), picks = [], Y = 1.1;
+    const edge = (x, y, z, w, h, c = 0xa56bff) => { k.box('glow', c, x, y + h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x, y - h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x - w / 2, y, z, 0.08, h, 0.1); k.box('glow', c, x + w / 2, y, z, 0.08, h, 0.1); };
+    // podium
+    k.cyl('lit', 0x1a1640, 0, 0.5, 0, 8.4, 1.0, 1, 0.8); k.cyl('lit', 0x2c2a62, 0, Y - 0.04, 0, 8.0, 0.1, 1, 0.8);
+    for (const [r, y, c] of [[8.4, 0.95, 0xa56bff], [8.4, 0.3, 0x48b8ff], [9.0, 0.1, 0xffb348]]) B.add('glow', new THREE.TorusGeometry(r, 0.09, 6, 90).rotateX(Math.PI / 2), c, { x: 0, y, z: 0, sz: 0.8 });
+    // back wall: info panel, kanban screen, tech-stack panel, header
+    k.box('lit', 0x1c1b4a, -6.4, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.tfInfo(), 3.9, 6.4, -6.4, Y + 3.7, -2.28, 0, { transparent: false })); edge(-6.4, Y + 3.7, -2.22, 3.9, 6.4);
+    k.box('lit', 0x161b4a, 0.5, Y + 4.1, -3.3, 8.6, 6.9, 0.6); g.add(plane(L.tfScreen(), 7.6, 4.275, 0.5, Y + 4.2, -2.98, 0, { transparent: false })); edge(0.5, Y + 4.2, -2.94, 7.6, 4.275, 0x6fb0ff);
+    k.box('lit', 0x1c1b4a, 7.0, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.tfStack(), 3.9, 6.4, 7.0, Y + 3.7, -2.28, 0, { transparent: false })); edge(7.0, Y + 3.7, -2.22, 3.9, 6.4);
+    g.add(plane(L.tfHeader(), 9.6, 2.26, 0.5, Y + 8.6, -3.1)); k.box('glow', 0xc9a8ff, 0.5, Y + 7.5, -3.0, 6.6, 0.07, 0.07);
+    // miniature workspace – rotatable (drag it, or let it turn slowly)
+    const ix = -0.4, iy = Y + 0.04, iz = 2.4;
+    const isl = new THREE.Group(); isl.position.set(ix, iy, iz); isl.userData.anim = { type: 'bld' };
+    { const Bi = new Batch(), ki = kit(Bi, rand);
+      ki.cyl('lit', 0x3a3a60, 0, 0.3, 0, 4.1, 0.6); ki.cyl('lit', 0x4f9a3e, 0, 0.66, 0, 3.95, 0.14); ki.tor('glow', 0xa56bff, 4.1, 0.07, 0, 0.3, 0);
+      // desk + monitor + laptop
+      ki.box('lit', 0xb98a58, 0, 1.55, -0.9, 3.8, 0.14, 1.5); for (const sx of [-1, 1]) ki.box('lit', 0x6a4a2c, sx * 1.7, 1.1, -0.9, 0.14, 0.9, 1.3);
+      ki.box('lit', 0x14103a, 0, 2.55, -1.3, 2.4, 1.4, 0.1); ki.box('glow', 0x7c5cff, 0, 2.55, -1.24, 2.2, 1.2, 0.03); ki.box('glow', 0xff9a5c, -0.7, 2.75, -1.2, 0.5, 0.5, 0.03); ki.box('glow', 0x6fa8ff, 0, 2.75, -1.2, 0.5, 0.5, 0.03); ki.box('glow', 0x3fcf9a, 0.7, 2.75, -1.2, 0.5, 0.5, 0.03);
+      ki.cyl('lit', 0x8a90a0, 0, 1.78, -1.3, 0.14, 0.4); ki.box('lit', 0xc4c8d4, -1.4, 1.68, -0.5, 0.9, 0.06, 0.6); ki.box('lit', 0x2a3070, -1.4, 1.95, -0.8, 0.9, 0.55, 0.05, 0, -0.2);
+      ki.cyl('lit', 0xf4efe6, 1.5, 1.72, -0.6, 0.14, 0.22); ki.box('lit', 0x6a52e8, 1.1, 1.7, -0.3, 0.7, 0.14, 0.5); ki.box('lit', 0xff8a5c, 1.1, 1.82, -0.3, 0.6, 0.12, 0.45, 0.2);
+      // lamp
+      ki.cyl('lit', 0x2a2440, 1.6, 1.66, -1.3, 0.2, 0.08); ki.box('lit', 0x2a2440, 1.6, 2.1, -1.3, 0.06, 0.9, 0.06, 0, 0, -0.3); ki.cone('lit', 0xffd23a, 1.35, 2.5, -1.3, 0.28, 0.3, Math.PI, 0); ki.box('glow', 0xffe9a0, 1.35, 2.3, -1.3, 0.3, 0.05, 0.3);
+      // chair
+      ki.cyl('lit', 0x2a2440, 0, 0.9, 0.9, 0.08, 0.55); ki.cyl('lit', 0x6a52e8, 0, 1.2, 0.9, 0.55, 0.14); ki.box('lit', 0x6a52e8, 0, 1.75, 1.35, 1.0, 0.9, 0.12);
+      // easel board with checklist
+      ki.box('lit', 0xc9a05a, -2.6, 1.6, 0.3, 0.08, 1.9, 0.08, 0.5, 0, 0.12); ki.box('lit', 0xc9a05a, -1.7, 1.6, 0.9, 0.08, 1.9, 0.08, 0.5, 0, -0.12);
+      ki.box('lit', 0x2a1d66, -2.15, 2.0, 0.6, 1.5, 1.2, 0.08, 0.5); for (let i = 0; i < 3; i++) { ki.box('glow', 0x3fcf9a, -2.5 + i * 0.07 - 0.06, 2.35 - i * 0.35, 0.9 - i * 0.07 + 0.12, 0.2, 0.2, 0.03, 0.5); ki.box('glow', 0xc9a8ff, -2.1 + i * 0.07, 2.35 - i * 0.35, 0.9 - i * 0.07 - 0.02, 0.7, 0.08, 0.03, 0.5); }
+      // trees + plants
+      for (const [tx, tz, s] of [[-3.0, -1.5, 1.1], [3.1, -1.2, 1.0]]) { ki.cone('lit', 0x6a4528, tx, 0.7 + 0.5 * s, tz, 0.12 * s, 1.1 * s); for (let i = 0; i < 5; i++) { const a = rand() * 6.28, r = rand() * 0.5; ki.ico('lit', [0x3fa05a, 0x2e8a4a, 0x57b86a][i % 3], tx + Math.cos(a) * r, 0.7 + (1.3 + rand() * 0.5) * s, tz + Math.sin(a) * r, 0.55 * s, 0.85); } }
+      for (const [px, pz] of [[2.6, 1.5], [-3.2, 1.3]]) { ki.cyl('lit', 0xe8e0d6, px, 0.9, pz, 0.28, 0.4); for (let i = 0; i < 5; i++) { const a = i * 1.26; ki.cone('lit', 0x3fcf9a, px + Math.cos(a) * 0.1, 1.5, pz + Math.sin(a) * 0.1, 0.12, 0.7 + (i % 2) * 0.2, Math.cos(a) * 0.4, -Math.sin(a) * 0.4); } }
+      isl.add(Bi.build('lit', lit()), Bi.build('glow', glow())); }
+    g.add(isl);
+    const kpS = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xa56bff, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false })); kpS.scale.set(3, 3, 1); kpS.position.set(ix, iy + 2.0, iz + 0.6); g.add(kpS);
+    const ihit = new THREE.Mesh(new THREE.CylinderGeometry(4.1, 4.1, 3.6, 18), new THREE.MeshBasicMaterial()); ihit.visible = false; ihit.position.set(ix, iy + 1.5, iz); ihit.userData.kind = 'bld'; g.add(ihit); picks.push(ihit);
+    // name plate on the podium front
+    g.add(plane(L.tfPlate(), 4.6, 1.12, ix, Y + 0.45, 7.55, 0)); edge(ix, Y + 0.45, 7.58, 4.6, 1.12);
+    // floating team-chat bubble, cloud upload and code ring
+    const anim = (o, a) => { o.userData.anim = a; return o; };
+    { const bm = new THREE.MeshBasicMaterial({ color: 0xa78bff, toneMapped: false }), wm = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+      const bb = new THREE.Group(); bb.add(new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14).scale(1.5, 1.0, 0.5), bm));
+      for (let i = -1; i <= 1; i++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.22, 10, 8), wm); d.position.set(i * 0.6, 0, 0.5); bb.add(d); }
+      bb.position.set(-12.6, Y + 7.6, 1.6); bb.userData.y0 = bb.position.y; anim(bb, { type: 'spin', sp: 0.5, bob: 0.3, ph: 1 }); g.add(bb);
+      const cl = new THREE.Group(), cm = new THREE.MeshBasicMaterial({ color: 0xc9b8ff, toneMapped: false });
+      for (const [cx, cy, r] of [[0, 0, 0.8], [-0.9, -0.2, 0.6], [0.95, -0.15, 0.65], [0.3, 0.45, 0.6]]) { const sp = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), cm); sp.position.set(cx, cy, 0); cl.add(sp); }
+      const ar = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.6, 3), wm); ar.position.set(0, 0.7, 0.7); cl.add(ar); const sh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.2), wm); sh.position.set(0, 0.2, 0.7); cl.add(sh);
+      cl.position.set(13.6, Y + 7.4, 1.6); cl.userData.y0 = cl.position.y; anim(cl, { type: 'spin', sp: 0.4, bob: 0.3, ph: 2 }); g.add(cl);
+      const lp = new THREE.Group(), gm = new THREE.MeshBasicMaterial({ color: 0xa56bff, toneMapped: false }); for (let i = 0; i < 3; i++) lp.add(new THREE.Mesh(new THREE.TorusGeometry(1.0 - i * 0.28, 0.07, 8, 40), gm));
+      lp.position.set(-13.8, Y + 4.4, 3.6); lp.userData.y0 = lp.position.y; anim(lp, { type: 'spin', sp: 0.8, bob: 0.3 }); g.add(lp); }
+    for (const [fx, fz] of [[-9.6, 5.2], [12.0, 4.6], [6.0, 8.2]]) { k.cyl('lit', 0x2c2a62, fx, Y + 0.3, fz, 0.5, 0.6); for (let i = 0; i < 6; i++) { const a = i * 1.05; k.cone('lit', 0x3fcf9a, fx + Math.cos(a) * 0.18, Y + 0.95, fz + Math.sin(a) * 0.18, 0.14, 0.9 + (i % 3) * 0.2, Math.cos(a) * 0.35, -Math.sin(a) * 0.35); } }
+    // banners + chandelier + cove (lab colours)
+    for (const [x, t] of [[-14.2, 0.18], [-11.6, 0.18], [11.6, -0.18], [14.2, -0.18]]) g.add(plane(TH.banner, 2.4, 7.2, x, 8.6, -5.5, t));
+    k.tor('glow', 0xffffff, 6.2, 0.18, 0, 11.6, -1); k.tor('glow', 0xc9a8ff, 5.0, 0.1, 0, 11.0, -1);
+    for (const [w, d, x, z] of [[32, 0.14, 0, -12], [32, 0.14, 0, 8], [0.14, 20, -16, -2], [0.14, 20, 16, -2]]) k.box('glow', TH.cove, x, 12.9, z, w, 0.14, d);
+    const dk = desk(g, k, { x: 9.6, z: 6.4, ry: -0.5, title: 'TaskFlow', accent: '#a890ff', accentHex: 0xa56bff }); picks.push(dk.hit);
+    g.add(B.build('lit', lit()), B.build('glow', glow()));
+    const hover = hoverRing(8.4, 0.95, 0xb9a4ff); hover.scale.z = 0.8; g.add(hover);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(8.4, 8.4, 9, 14).scale(1, 1, 0.8), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
+    const grp = mirrored(g), anims = []; grp.traverse((o) => { if (o.userData.anim) anims.push(o); });
+    return { key: 'taskflow', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
+  };
+
+  // ═════════ Fish and Chips Poker (My Projects Lab + SLIIT) ═════════
+  const mkPoker = () => {
+    const { B, k, g } = mk(), picks = [], Y = 1.1;
+    const edge = (x, y, z, w, h, c = 0xa56bff) => { k.box('glow', c, x, y + h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x, y - h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x - w / 2, y, z, 0.08, h, 0.1); k.box('glow', c, x + w / 2, y, z, 0.08, h, 0.1); };
+    // podium
+    k.cyl('lit', 0x1a1640, 0, 0.5, 0, 8.4, 1.0, 1, 0.8); k.cyl('lit', 0x2c2a62, 0, Y - 0.04, 0, 8.0, 0.1, 1, 0.8);
+    for (const [r, y, c] of [[8.4, 0.95, 0xa56bff], [8.4, 0.3, 0x48b8ff], [9.0, 0.1, 0xffb348]]) B.add('glow', new THREE.TorusGeometry(r, 0.09, 6, 90).rotateX(Math.PI / 2), c, { x: 0, y, z: 0, sz: 0.8 });
+    // back wall: info panel, kanban screen, tech-stack panel, header
+    k.box('lit', 0x1c1b4a, -6.4, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.pkInfo(), 3.9, 6.4, -6.4, Y + 3.7, -2.28, 0, { transparent: false })); edge(-6.4, Y + 3.7, -2.22, 3.9, 6.4);
+    k.box('lit', 0x161b4a, 0.5, Y + 4.1, -3.3, 8.6, 6.9, 0.6); g.add(plane(L.pkScreen(), 7.6, 4.275, 0.5, Y + 4.2, -2.98, 0, { transparent: false })); edge(0.5, Y + 4.2, -2.94, 7.6, 4.275, 0x6fb0ff);
+    k.box('lit', 0x1c1b4a, 7.0, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.pkStack(), 3.9, 6.4, 7.0, Y + 3.7, -2.28, 0, { transparent: false })); edge(7.0, Y + 3.7, -2.22, 3.9, 6.4);
+    g.add(plane(L.pkHeader(), 9.6, 2.26, 0.5, Y + 8.6, -3.1)); k.box('glow', 0xc9a8ff, 0.5, Y + 7.5, -3.0, 6.6, 0.07, 0.07);
+    // miniature poker table - rotatable (drag it, or let it turn slowly)
+    const ix = -0.4, iy = Y + 0.04, iz = 2.4;
+    const isl = new THREE.Group(); isl.position.set(ix, iy, iz); isl.userData.anim = { type: 'bld' };
+    { const Bi = new Batch(), ki = kit(Bi, rand);
+      ki.cyl('lit', 0x3a2a6a, 0, 0.3, 0, 4.1, 0.6); ki.cyl('lit', 0x5a3aa0, 0, 0.66, 0, 3.95, 0.14); ki.tor('glow', 0xa56bff, 4.1, 0.07, 0, 0.3, 0); ki.tor('glow', 0xffb348, 3.7, 0.05, 0, 0.74, 0);
+      ki.cyl('lit', 0x4a2a8a, 0, 1.15, 0, 2.7, 0.9, 1, 0.7); ki.cyl('lit', 0x14907e, 0, 1.64, 0, 2.5, 0.1, 1, 0.7); ki.tor('glow', 0xffb348, 2.6, 0.06, 0, 1.7, 0, Math.PI * 2, 48);
+      for (let i = 0; i < 5; i++) ki.box('lit', 0xffffff, -0.9 + i * 0.45, 1.73, 0.1, 0.36, 0.03, 0.52, (i - 2) * 0.05);
+      for (let i = 0; i < 3; i++) ki.box('glow', i % 2 ? 0xff6a8a : 0x222a60, -0.9 + i * 0.9, 1.76, 0.1, 0.18, 0.02, 0.28);
+      for (const [cx, cz, n, col] of [[-2.6, 1.2, 6, 0xffc83a], [-2.1, 1.7, 4, 0xffc83a], [2.5, 1.5, 7, 0x8a5cff], [2.9, 0.8, 5, 0x6a4ce0], [-1.5, 2.2, 3, 0xffc83a]]) for (let i = 0; i < n; i++) ki.cyl('lit', i % 2 ? col : 0xffffff, cx, 0.78 + i * 0.1, cz, 0.38, 0.09);
+      ki.box('lit', 0x8a1a2e, 0, 1.4, -2.2, 1.5, 1.4, 0.3); ki.box('lit', 0x8a1a2e, 0, 0.95, -1.7, 1.5, 0.5, 1.2); ki.box('lit', 0xffc83a, 0, 2.25, -2.2, 1.6, 0.18, 0.34);
+      ki.ico('lit', 0x3aa8ff, 0, 1.75, -1.7, 0.7, 1.0, 1.0); ki.cone('lit', 0x3aa8ff, 0, 1.75, -2.3, 0.35, 0.7, Math.PI / 2, 0); ki.cone('lit', 0xffc83a, 0, 2.5, -1.7, 0.4, 0.45);
+      ki.box('lit', 0x14103a, -0.2, 1.9, -1.15, 0.22, 0.14, 0.05); ki.box('lit', 0x14103a, 0.2, 1.9, -1.15, 0.22, 0.14, 0.05);
+      for (const [px, pz] of [[-3.3, -0.5], [3.4, -0.6]]) for (let i = 0; i < 4; i++) ki.cone('lit', 0x2fbf8a, px + (i - 1.5) * 0.18, 1.2, pz, 0.14, 1.4 + (i % 2) * 0.5, 0, (i - 1.5) * 0.15);
+      for (const [px, pz] of [[2.6, -1.8], [-2.8, -1.9]]) for (let i = 0; i < 4; i++) ki.cone('lit', 0xff6a5c, px + (i - 1.5) * 0.2, 0.95, pz, 0.12, 0.7, 0, (i - 1.5) * 0.4);
+      isl.add(Bi.build('lit', lit()), Bi.build('glow', glow())); }
+    g.add(isl);
+    const kpS = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffb348, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false })); kpS.scale.set(3.4, 3.4, 1); kpS.position.set(ix, iy + 2.0, iz + 0.6); g.add(kpS);
+    const ihit = new THREE.Mesh(new THREE.CylinderGeometry(4.1, 4.1, 3.6, 18), new THREE.MeshBasicMaterial()); ihit.visible = false; ihit.position.set(ix, iy + 1.5, iz); ihit.userData.kind = 'bld'; g.add(ihit); picks.push(ihit);
+    // name plate on the podium front
+    g.add(plane(L.pkPlate(), 4.6, 1.12, ix, Y + 0.45, 7.55, 0)); edge(ix, Y + 0.45, 7.58, 4.6, 1.12);
+    // floating cards + coins
+    const anim = (o, a) => { o.userData.anim = a; return o; };
+    [[0xffffff, -12.6, 7.6], [0xffc83a, 13.4, 7.2], [0xff6a8a, -13.8, 4.6], [0x8a5cff, 13.8, 4.4]].forEach(([c, x, y], i) => {
+      const mt = new THREE.MeshBasicMaterial({ color: c, toneMapped: false });
+      const m = i === 1 || i === 3 ? new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.16, 20).rotateX(Math.PI / 2), mt) : new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.4, 0.06), mt);
+      m.position.set(x, Y + y, 1.8); m.userData.y0 = m.position.y; anim(m, { type: 'spin', sp: 0.5 + i * 0.1, bob: 0.3, ph: i }); g.add(m); });
+    // fast little fish fleeing from a hungry shark (they circle the stage)
+    { const mat = (c) => new THREE.MeshLambertMaterial({ color: c });
+      const makeFish = (c, sc) => { // nose points +z, children[1] is the tail (wiggled in the update loop)
+        const f = new THREE.Group(), m = mat(c);
+        f.add(new THREE.Mesh(new THREE.SphereGeometry(0.5, 14, 10).scale(0.62, 0.8, 1.45), m));
+        const tail = new THREE.Group(); tail.position.z = -0.62; const tc = new THREE.Mesh(new THREE.ConeGeometry(0.42, 0.7, 4).rotateX(-Math.PI / 2).scale(0.25, 1, 1), m); tc.position.z = -0.3; tail.add(tc); f.add(tail);
+        const fin = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.45, 4).scale(0.3, 1, 1), m); fin.position.set(0, 0.52, -0.05); f.add(fin);
+        for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), mat(0xffffff)); e.position.set(sx * 0.27, 0.12, 0.5); const p = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), mat(0x101030)); p.position.set(sx * 0.03, 0, 0.07); e.add(p); f.add(e); }
+        f.scale.setScalar(sc); return f; };
+      const makeShark = () => {
+        const f = new THREE.Group(), body = mat(0x5f7fa8), belly = mat(0xe8eef8);
+        f.add(new THREE.Mesh(new THREE.SphereGeometry(0.5, 18, 12).scale(1.1, 1.0, 3.0), body));
+        const tail = new THREE.Group(); tail.position.z = -1.45;
+        const t1 = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1.3, 4).rotateX(-Math.PI / 2).scale(0.22, 1, 1), body); t1.position.set(0, 0.25, -0.5); t1.rotation.x = 0.5; tail.add(t1);
+        const t2 = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.9, 4).rotateX(-Math.PI / 2).scale(0.22, 1, 1), body); t2.position.set(0, -0.25, -0.35); t2.rotation.x = -0.5; tail.add(t2); f.add(tail);
+        const dor = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1.0, 4).scale(0.25, 1, 1), body); dor.position.set(0, 0.95, 0.1); dor.rotation.x = -0.3; f.add(dor);
+        for (const sx of [-1, 1]) { const pf = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.9, 4).scale(1, 1, 0.25), body); pf.position.set(sx * 0.75, -0.3, 0.5); pf.rotation.z = sx * 1.9; f.add(pf); }
+        const bl = new THREE.Mesh(new THREE.SphereGeometry(0.5, 14, 10).scale(0.95, 0.5, 2.6), belly); bl.position.y = -0.22; f.add(bl);
+        const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.4, 10, 8).scale(0.9, 0.35, 0.9), mat(0x5a1020)); mouth.position.set(0, -0.28, 1.35); f.add(mouth);
+        for (let i = 0; i < 6; i++) { const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), mat(0xffffff)); tooth.position.set(-0.3 + i * 0.12, -0.18, 1.62); tooth.rotation.x = Math.PI; f.add(tooth); }
+        for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), mat(0xffffff)); e.position.set(sx * 0.5, 0.2, 1.1); const p = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 5), mat(0x200000)); p.position.set(sx * 0.03, 0, 0.07); e.add(p); f.add(e); }
+        f.scale.setScalar(1.25); return f; };
+      const path = { cx: 0, cz: 3.4, rx: 10, rz: 3.9 };
+      const spawn = (obj, extra) => { obj.userData.y0 = Y + extra.y; obj.userData.anim = { type: 'swim', ...path, ...extra }; g.add(obj); };
+      [[0xffa63a, 0.9, 1.2, 0.5, 9.6, 0.6], [0xffd23a, 0.8, 1.7, 0.5, 10.4, 0.4], [0x3ae0ff, 0.85, 1.4, 0.55, 9.2, 0.7], [0xff6a8a, 0.75, 2.0, 0.4, 10.8, 0.3], [0x7cff9a, 0.8, 2.6, 0.5, 9.9, 0.5], [0xffa63a, 0.7, 3.1, 0.45, 10.2, 0.35]]
+        .forEach(([c, sc, ph, dart, rx, ya], i) => spawn(makeFish(c, sc), { y: 4.6 + (i % 3) * 0.9, sp: 1.95 + (i % 2) * 0.15, ph, dart, rx, ya, wag: 26, wagAmp: 0.7 }));
+      spawn(makeShark(), { y: 5.0, sp: 1.9, ph: 0, dart: 0.3, rx: 10.0, ya: 0.5, wag: 9, wagAmp: 0.4 }); }
+    for (const [fx, fz] of [[-9.6, 5.2], [12.0, 4.6], [6.0, 8.2]]) { k.cyl('lit', 0x2c2a62, fx, Y + 0.3, fz, 0.5, 0.6); for (let i = 0; i < 6; i++) { const a = i * 1.05; k.cone('lit', 0x3fcf9a, fx + Math.cos(a) * 0.18, Y + 0.95, fz + Math.sin(a) * 0.18, 0.14, 0.9 + (i % 3) * 0.2, Math.cos(a) * 0.35, -Math.sin(a) * 0.35); } }
+    // banners + chandelier + cove (lab colours)
+    for (const [x, t] of [[-14.2, 0.18], [-11.6, 0.18], [11.6, -0.18], [14.2, -0.18]]) g.add(plane(TH.banner, 2.4, 7.2, x, 8.6, -5.5, t));
+    k.tor('glow', 0xffffff, 6.2, 0.18, 0, 11.6, -1); k.tor('glow', 0xc9a8ff, 5.0, 0.1, 0, 11.0, -1);
+    for (const [w, d, x, z] of [[32, 0.14, 0, -12], [32, 0.14, 0, 8], [0.14, 20, -16, -2], [0.14, 20, 16, -2]]) k.box('glow', TH.cove, x, 12.9, z, w, 0.14, d);
+    const dk = desk(g, k, { x: 9.6, z: 6.4, ry: -0.5, title: 'Fish and Chips Poker', accent: '#a890ff', accentHex: 0xa56bff }); picks.push(dk.hit);
+    g.add(B.build('lit', lit()), B.build('glow', glow()));
+    const hover = hoverRing(8.4, 0.95, 0xb9a4ff); hover.scale.z = 0.8; g.add(hover);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(8.4, 8.4, 9, 14).scale(1, 1, 0.8), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
+    const grp = mirrored(g), anims = []; grp.traverse((o) => { if (o.userData.anim) anims.push(o); });
+    return { key: 'poker', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
+  };
+
+  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkPoker()] : [mkPreschool(), mkAvurudu(), mkPortfolio(), mkTaskflow(), mkPoker()];
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
   let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;
@@ -443,6 +584,11 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
         if (performance.now() - bldDrag > 2200) bldAng += dt * 0.35;
         for (const o of R.anims) { const a = o.userData.anim;
           if (a.type === 'bld') o.rotation.y = bldAng;
+          else if (a.type === 'swim') {
+            const ph = a.ph || 0, ang = t * a.sp + ph + (a.dart || 0) * Math.sin(t * 2.3 + ph * 3), dang = a.sp + (a.dart || 0) * 2.3 * Math.cos(t * 2.3 + ph * 3);
+            o.position.set(a.cx + a.rx * Math.cos(ang), o.userData.y0 + (a.ya || 0) * Math.sin(ang * 2 + ph), a.cz + a.rz * Math.sin(ang));
+            o.rotation.y = Math.atan2(-a.rx * Math.sin(ang) * Math.sign(dang), a.rz * Math.cos(ang) * Math.sign(dang));
+            const tl = o.children[1]; if (tl) tl.rotation.y = Math.sin(t * (a.wag || 16) + ph) * (a.wagAmp || 0.5); }
           else if (a.type === 'bob') o.position.y = o.userData.y0 + Math.sin(t * a.sp + (a.ph || 0)) * a.amp;
           else if (a.type === 'spin') { o.rotation.y = t * a.sp; o.rotation.x = t * a.sp * 0.5; if (a.bob) o.position.y = o.userData.y0 + Math.sin(t * 1.1 + (a.ph || 0)) * a.bob; } }
       }
