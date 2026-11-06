@@ -33,5 +33,16 @@ Click the My Projects Lab building (or "Projects" in the menu) to walk in. Use t
 between project showrooms. Hover a model to see the project details; click "CLICK TO EXPLORE" to open the live site.
 To add another project room: add `room: 'yourKey'` to the project in `src/config.js` and build a room in `src/lab.js`.
 
+## Projects Lab – table, laptop & details reader
+- Click the **model** in a room → opens that project's live site (`href` in `src/config.js`).
+- Click the **laptop on the table** → opens a scrollable project-details window (bullets, tech stack, live-site button). Add extra sections per project with `details: [{ heading: '…', text: '…' }]` in `src/config.js`.
+- Click the **"My Projects Lab" banner** on the island → opens the full project list panel (it also has an "Enter the 3D Lab" button). Clicking the rest of the building still walks you inside.
+- Rebuild after editing: `npm run build`
+
 ## SLIIT University showroom
-Click the **SLIIT University building** → walk inside a daylight university hall with the project showrooms, tables and laptops (click the model → live site, click the laptop → project details). Click the SLIIT banner or "Education" for the details panel.
+Click the **SLIIT University building** → walk inside a daylight university hall (cream walls, navy & gold banners, SLIIT sign) with the same two project showrooms, tables and laptops. Click the **SLIIT banner** (or "Education" in the menu) for the education details panel, which also has an "Enter the SLIIT Showroom" button. Theme colours live in the `TH` object at the top of `buildLab()` in `src/lab.js`.
+
+## NupaStack showroom
+Click the **NupaStack building** → enter a violet corporate lobby with the "NupaStack Website – 3D Enhancement" exhibit (logo wall, website screen, overview panel, building model). Click the model → https://nupastack.netlify.app, click the laptop or the "View Project Details" kiosk → project details reader. Click the NupaStack banner (or "NupaStack" in the menu) for the details panel. Edit the project in `src/config.js` (`places.nupa.projects`).
+
+The small NupaStack building on the plinth **rotates** – drag it left/right (it also turns slowly by itself). The room has NupaStack banners (Cloud Audit, DevOps Retainer, Secure by Design, Build & Deploy), a Tech Stack panel and a 3D Highlights panel, server racks, a floating cloud, an infinity loop and floating tool cubes. The tech stack and details come from the real site source (plain HTML/CSS/JS, Three.js r160, Blender/GLB, Node + Puppeteer/Playwright, Netlify).

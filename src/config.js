@@ -69,7 +69,30 @@ export const CONFIG = {
         'Custom Software – cloud-native apps, APIs and tools',
       ],
       tags: ['AWS', 'DevOps', 'Cloud', 'Custom Software'],
-      buttons: [{ label: 'Visit nupastack.com', href: 'https://nupastack.com/' }],
+      projects: [
+        {
+          title: 'NupaStack Website – 3D Enhancement',
+          room: 'nupa',
+          href: 'https://nupastack.netlify.app',
+          bullets: [
+            'Integrated Three.js into the NupaStack website to create an interactive and modern 3D experience.',
+            'NupaStack is a cloud and DevOps consultancy site (cloud audits, DevOps retainers, implementation) – the 3D layer was added without changing its fast, plain HTML/CSS/JS foundation.',
+          ],
+          details: [
+            { heading: 'My contributions', items: [
+              'Built page-specific 3D hero scenes with Three.js r160 for Home, About, How We Work, Blog, Cloud Audit and Founder pages.',
+              'Created reusable procedural 3D components and a shared scene toolkit (rounded boxes, glow materials, reflection environment).',
+              'Modelled the NupaStack hero in Blender (Python/bpy script) and exported it as an optimised GLB loaded with GLTFLoader.',
+              'Optimised performance: lazy-start scenes, pixel-ratio limits, and static WebP/PNG fallbacks when WebGL is unavailable.',
+              'Automated checks with Node.js, Puppeteer and Playwright, plus captures of the rendered scenes.',
+              'Improved the user experience with responsive layouts and an SEO-ready setup (sitemap, robots, Open Graph).',
+            ] },
+            { heading: 'How it is built', text: 'Plain HTML, CSS and JavaScript – no framework. Three.js r160 is served locally through an import map, so every page loads only the 3D code it needs. The site is deployed on Netlify with custom headers and redirects.' },
+          ],
+          stack: ['HTML5', 'CSS3', 'JavaScript (ES Modules)', 'Three.js r160', 'WebGL', 'GLTF / GLB', 'Blender + Python (bpy)', 'Node.js', 'Puppeteer', 'Playwright', 'Netlify'],
+        },
+      ],
+      buttons: [{ label: 'Enter the NupaStack Showroom →', action: 'nupalab' }, { label: 'Visit nupastack.com', href: 'https://nupastack.com/' }],
     },
 
     labs: {
@@ -113,7 +136,7 @@ export const CONFIG = {
         },
         { title: 'Poker Game Website' },
       ],
-      buttons: [{ label: 'More on GitHub', href: 'github' }],
+      buttons: [{ label: 'Enter the 3D Lab →', action: 'lab' }, { label: 'More on GitHub', href: 'github' }],
     },
   },
 };
