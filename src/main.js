@@ -53,6 +53,8 @@ const VIEWS = {
   sliit: { yaw: 0.5, pitch: 0.27, tx: -20, ty: 3.6, tz: -3.5, d: 31 },
   labs: { yaw: -0.5, pitch: 0.27, tx: 20, ty: 3.6, tz: -3.5, d: 31 },
   sliitDoor: { yaw: 0.52, pitch: 0.1, tx: -18.6, ty: 2.6, tz: -0.9, d: 9 },
+  nupaDoor: { yaw: 0, pitch: 0.1, tx: 0, ty: 2.6, tz: -7.0, d: 9 },
+  labsDoor: { yaw: -0.52, pitch: 0.1, tx: 18.4, ty: 2.6, tz: -0.6, d: 9 },
 };
 
 function setView(key) {
@@ -72,11 +74,11 @@ function openPanel(key) {
   const chip = (t) => `<span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs">${t}</span>`;
   $('#p-kicker').textContent = p.kicker; $('#p-title').textContent = p.title; $('#p-text').textContent = p.text;
   $('#p-points').innerHTML = (p.points || []).map((t) => `<li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_8px_#22d3ee]"></span><span>${t}</span></li>`).join('');
-  $('#p-projects').innerHTML = (p.projects || []).map((pr) => `<div class="rounded-2xl border border-white/10 bg-white/5 p-4"><div class="flex items-start justify-between gap-3"><h3 class="text-sm font-semibold leading-snug">${pr.title}</h3>${pr.year ? `<span class="shrink-0 text-xs text-cyan-300">${pr.year}</span>` : ''}</div>${pr.bullets ? `<ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-white/75">${pr.bullets.map((b) => `<li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-cyan-300"></span><span>${b}</span></li>`).join('')}</ul>` : ''}${pr.stack ? `<div class="mt-3 flex flex-wrap gap-1.5">${pr.stack.map((t) => `<span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[11px]">${t}</span>`).join('')}</div>` : ''}${(pr.details || []).map((d) => `<p class="mt-2 text-xs leading-relaxed text-white/75"><b class="text-white/90">${d.heading}:</b> ${d.text}</p>`).join('')}${pr.href ? `<a href="${pr.href}" target="_blank" rel="noopener" class="mt-3 inline-block text-xs font-semibold text-cyan-300 hover:underline">Live site ↗</a>` : ''}</div>`).join('');
+  $('#p-projects').innerHTML = (p.projects || []).map((pr) => `<div class="rounded-2xl border border-white/10 bg-white/5 p-4"><div class="flex items-start justify-between gap-3"><h3 class="text-sm font-semibold leading-snug">${pr.title}</h3>${pr.year ? `<span class="shrink-0 text-xs text-cyan-300">${pr.year}</span>` : ''}</div>${pr.bullets ? `<ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-white/75">${pr.bullets.map((b) => `<li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-cyan-300"></span><span>${b}</span></li>`).join('')}</ul>` : ''}${pr.stack ? `<div class="mt-3 flex flex-wrap gap-1.5">${pr.stack.map((t) => `<span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[11px]">${t}</span>`).join('')}</div>` : ''}${(pr.details || []).map((d) => `<p class="mt-2 text-xs leading-relaxed text-white/75"><b class="text-white/90">${d.heading}:</b> ${d.items ? d.items.join(' · ') : d.text}</p>`).join('')}${pr.href ? `<a href="${pr.href}" target="_blank" rel="noopener" class="mt-3 inline-block text-xs font-semibold text-cyan-300 hover:underline">Live site ↗</a>` : ''}</div>`).join('');
   $('#p-groups').innerHTML = (p.groups || []).map((g) => `<div><p class="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-300">${g.title}</p><div class="flex flex-wrap gap-2">${g.items.map(chip).join('')}</div></div>`).join('');
   $('#p-tags').innerHTML = (p.tags || []).map(chip).join('');
   $('#p-buttons').innerHTML = (p.buttons || []).map((b) => b.action ? `<button data-action="${b.action}" class="rounded-full border border-cyan-300/60 bg-cyan-300/10 px-4 py-2 text-xs font-semibold text-cyan-200 transition hover:bg-cyan-300/20">${b.label}</button>` : `<a href="${CONFIG.links[b.href] || b.href}" target="_blank" rel="noopener" class="rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2 text-xs font-semibold text-[#0b1230] transition hover:brightness-110">${b.label}</a>`).join('');
-  panel.querySelectorAll('[data-action]').forEach((b) => b.addEventListener('click', () => go('sliitLab')));
+  panel.querySelectorAll('[data-action]').forEach((b) => b.addEventListener('click', () => go({ lab: 'labsLab', sliitlab: 'sliitLab', nupalab: 'nupaLab' }[b.dataset.action])));
   panel.scrollTop = 0;
   panel.dataset.open = 'true'; panelOpen = true;
 }
@@ -84,7 +86,10 @@ function closePanel() { panel.dataset.open = 'false'; panelOpen = false; }
 function go(key) {
   if (busy) return;
   if (key === 'sliitInfo') { if (mode === 'lab') return; setView('sliit'); openPanel('sliit'); return; }
-  if (key === 'sliitLab') { if (mode === 'lab') return; enterLab(false, 0, 'sliit'); return; }
+  const hall = { labsLab: 'lab', sliitLab: 'sliit', nupaLab: 'nupa' }[key];
+  if (hall) { if (mode === 'lab') { if (hall !== labKey) exitLab().then(() => enterLab(false, 0, hall)); return; } enterLab(false, 0, hall); return; }
+  if (key === 'nupaInfo') { if (mode === 'lab') return; setView('nupa'); openPanel('nupa'); return; }
+  if (key === 'labsInfo') key = 'labs';
   if (mode === 'lab') { exitLab().then(() => { if (key !== 'home') go(key); }); return; }
   setView(key); key === 'home' ? closePanel() : openPanel(key);
 }
@@ -104,7 +109,7 @@ let down = null, pinch0 = 0, zoom0 = 1;
 canvas.addEventListener('pointerdown', (e) => {
   canvas.setPointerCapture(e.pointerId);
   touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  down = { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 };
+  down = { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0, bld: mode === 'lab' && touches.size === 1 && lab && !readerOpen && labPick(e.clientX, e.clientY) === 'bld' };
   if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y); zoom0 = mode === 'lab' ? labCam.zoom : des.zoom; }
   dragging = true; lastInput = performance.now() / 1000;
   $('#hint').classList.add('opacity-0');
@@ -117,6 +122,9 @@ canvas.addEventListener('pointermove', (e) => {
   if (touches.size === 2) {
     const [a, b] = [...touches.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
     if (pinch0) { if (mode === 'lab') labCam.zoom = THREE.MathUtils.clamp(zoom0 * (pinch0 / d), 0.7, 1.2); else des.zoom = THREE.MathUtils.clamp(zoom0 * (pinch0 / d), 0.45, 1.25); }
+  } else if (down && mode === 'lab' && down.bld) {
+    down.moved += Math.abs(dx) + Math.abs(dy);
+    if (down.moved > 4) { lab.dragBld(dx * 0.012); canvas.style.cursor = 'grabbing'; }
   } else if (down && mode === 'lab') {
     down.moved += Math.abs(dx) + Math.abs(dy);
     labCam.dyaw = THREE.MathUtils.clamp(labCam.dyaw - dx * 0.004, -0.45, 0.45);
@@ -233,12 +241,12 @@ function islandFrame(dt, t, now) {
 
 // ───────── inside My Projects Lab ─────────
 const LAB_FOV = 46;
-let mode = 'island', lab = null, labKey = 'sliit', busy = false, hoverModel = false, hoverCta = false, cardFor = -1;
+let mode = 'island', lab = null, labKey = 'lab', busy = false, hoverModel = false, hoverCta = false, cardFor = -1;
 const labCam = { yaw: 0, pitch: 0, dyaw: 0, dpitch: 0, zoom: 1 };
 const fade = $('#fade'), labUI = $('#lab-ui'), card = $('#lab-card');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const labs = {};
-const labProjects = () => CONFIG.places.labs.projects;
+const labProjects = () => [...CONFIG.places.labs.projects, ...(CONFIG.places.nupa.projects || [])];
 const projectFor = (roomKey) => labProjects().find((p) => p.room === roomKey);
 
 function cardHTML(pr) {
@@ -262,7 +270,8 @@ const hideCard = () => card.classList.add('opacity-0');
 
 function updateLabUI() {
   const r = lab.rooms[lab.current], pr = projectFor(r.key), n = lab.rooms.length;
-  $('#lab-title').textContent = `${lab.current + 1} / ${n} · ${pr ? pr.title : r.key}`;
+  $('#lab-title').textContent = n > 1 ? `${lab.current + 1} / ${n} · ${pr ? pr.title : r.key}` : (pr ? pr.title : r.key);
+  ['#lab-prev', '#lab-next', '#lab-dots'].forEach((q) => $(q).classList.toggle('hidden', n < 2));
   $('#lab-dots').innerHTML = lab.rooms.map((_, i) => `<span class="h-2 rounded-full transition-all ${i === lab.current ? 'w-6 bg-cyan-300' : 'w-2 bg-white/40'}"></span>`).join('');
   cardFor = -1; hideCard();
 }
@@ -275,10 +284,10 @@ $('#lab-prev').addEventListener('click', () => labStep(-1));
 $('#lab-next').addEventListener('click', () => labStep(1));
 $('#lab-exit').addEventListener('click', () => exitLab());
 
-async function enterLab(instant = false, idx = 0, which = 'sliit') {
+async function enterLab(instant = false, idx = 0, which = 'lab') {
   if (mode === 'lab' || busy) return;
   busy = true; closePanel(); labKey = which;
-  if (!instant) { setView('sliitDoor'); document.querySelectorAll('[data-view]').forEach((b) => b.classList.toggle('is-active', b.dataset.view === 'sliit')); await sleep(reduced ? 150 : 1150); }
+  if (!instant) { setView({ lab: 'labsDoor', sliit: 'sliitDoor', nupa: 'nupaDoor' }[which]); document.querySelectorAll('[data-view]').forEach((b) => b.classList.toggle('is-active', b.dataset.view === { lab: 'labs', sliit: 'sliit', nupa: 'nupa' }[which])); await sleep(reduced ? 150 : 1150); }
   fade.classList.remove('opacity-0'); await sleep(instant ? 0 : 480);
   if (!labs[which]) labs[which] = buildLab({ mobile, theme: which });
   lab = labs[which];
@@ -305,7 +314,7 @@ function openSite(pr) { if (pr && pr.href) window.open(pr.href, '_blank', 'noope
 function labClick(x, y) {
   const kind = labPick(x, y), pr = projectFor(lab.rooms[lab.current].key);
   if (kind === 'laptop') { hideCard(); openReader(pr); }
-  else if (kind === 'model') {
+  else if (kind === 'model' || kind === 'bld') {
     openSite(pr);
   }
 }
@@ -316,10 +325,11 @@ function readerHTML(pr) {
   const chip = (t) => `<span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs">${t}</span>`;
   const sec = (h, inner) => `<h4 class="mb-2 mt-6 text-xs font-semibold uppercase tracking-widest text-cyan-300">${h}</h4>${inner}`;
   const dot = '<span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_8px_#22d3ee]"></span>';
-  return `<p class="text-xs font-semibold uppercase tracking-widest text-cyan-300">My Projects Lab${pr.year ? ' · ' + pr.year : ''}</p>
+  const hallName = { lab: 'My Projects Lab', sliit: 'SLIIT University · Student Projects', nupa: 'NupaStack · Project Showcase' }[labKey];
+  return `<p class="text-xs font-semibold uppercase tracking-widest text-cyan-300">${hallName}${pr.year ? ' · ' + pr.year : ''}</p>
     <h3 class="mt-1 text-2xl font-bold leading-tight sm:text-3xl">${pr.title}</h3>
     ${pr.bullets ? sec('About this project', `<ul class="space-y-3 text-sm leading-relaxed text-white/85 sm:text-[15px]">${pr.bullets.map((b) => `<li class="flex gap-3">${dot}<span>${b}</span></li>`).join('')}</ul>`) : ''}
-    ${(pr.details || []).map((d) => sec(d.heading, `<p class="text-sm leading-relaxed text-white/85 sm:text-[15px]">${d.text}</p>`)).join('')}
+    ${(pr.details || []).map((d) => sec(d.heading, d.items ? `<ul class="space-y-3 text-sm leading-relaxed text-white/85 sm:text-[15px]">${d.items.map((b) => `<li class="flex gap-3">${dot}<span>${b}</span></li>`).join('')}</ul>` : `<p class="text-sm leading-relaxed text-white/85 sm:text-[15px]">${d.text}</p>`)).join('')}
     ${pr.stack ? sec('Tech stack', `<div class="flex flex-wrap gap-2">${pr.stack.map(chip).join('')}</div>`) : ''}
     ${pr.href ? `<div class="mt-8"><a href="${pr.href}" target="_blank" rel="noopener" class="inline-block rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-2.5 text-sm font-semibold text-[#0b1230] transition hover:brightness-110">Visit live website ↗</a></div>` : ''}`;
 }
@@ -349,8 +359,8 @@ function labFrame(dt, t) {
   if (ptr.moved && !coarse && !dragging && !lab.transitioning()) {
     ptr.moved = false;
     const kind = ptr.inside ? labPick(ptr.x, ptr.y) : null;
-    hoverCta = kind === 'laptop'; hoverModel = kind === 'model';
-    canvas.style.cursor = kind ? 'pointer' : 'grab';
+    hoverCta = kind === 'laptop'; hoverModel = kind === 'model' || kind === 'bld';
+    canvas.style.cursor = kind === 'bld' ? 'grab' : kind ? 'pointer' : 'grab';
     if (hoverCta) { tip.textContent = 'Read project details'; tip.style.transform = `translate(${ptr.x + 16}px, ${ptr.y + 14}px)`; tip.classList.remove('opacity-0'); } else tip.classList.add('opacity-0');
   }
   if (lab.transitioning()) { hoverModel = hoverCta = false; hideCard(); tip.classList.add('opacity-0'); }
@@ -371,7 +381,7 @@ async function boot() {
   Object.assign(cur, des);
   const qs = new URLSearchParams(location.search), sk = qs.get('view');
   if (sk && VIEWS[sk] && !sk.endsWith('Door')) { go(sk); Object.assign(cur, des); }
-  if (qs.has('lab')) await enterLab(true, +qs.get('lab') || 0);
+  if (qs.has('lab')) await enterLab(true, +qs.get('lab') || 0, ['sliit', 'nupa'].includes(qs.get('hall')) ? qs.get('hall') : 'lab');
   renderer.setAnimationLoop(frame);
 }
 boot();
