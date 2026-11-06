@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=17">
-  <link rel="preload" href="js/app.js?v=17" as="script">
+  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="preload" href="js/app.js?v=18" as="script">
 </head>
 <body class="overflow-hidden bg-[#2a1450] font-sans text-white antialiased">
 
@@ -23,10 +23,11 @@
     <img src="assets/logo.png" alt="KP logo" class="h-24 w-24 rounded-3xl object-contain shadow-[0_0_40px_rgba(168,144,255,.55)] animate-pulse">
     <p id="loader-text" class="px-6 text-center text-sm text-white/80">Building the 3D island…</p>
     <div id="loader-bar" class="h-1.5 w-56 overflow-hidden rounded-full bg-white/15"><div id="loader-fill" class="h-full w-0 rounded-full bg-cyan-300 transition-all duration-500"></div></div>
+    <a id="loader-lite" href="?lite=1" class="invisible inline-flex min-h-[44px] items-center rounded-full border border-white/25 px-5 text-xs text-white/85 opacity-0 transition-opacity duration-500 hover:bg-white/10">Taking a while? Open the simple 2D version</a>
   </div>
 
   <!-- Top bar -->
-  <header class="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between p-4 sm:p-6">
+  <header id="top-bar" class="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between p-4 sm:p-6">
     <button data-view="home" class="glass pointer-events-auto flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-4 transition hover:bg-white/10" aria-label="Home">
       <img src="assets/logo.png" alt="KP" class="h-9 w-9 rounded-xl object-contain">
       <span class="hidden whitespace-nowrap text-sm font-semibold lg:block" data-name>Kavidu_H_Premasiri</span>
@@ -42,54 +43,66 @@
       <a id="social-gh" target="_blank" rel="noopener" class="glass grid h-10 w-10 place-items-center rounded-full text-xs font-semibold transition hover:bg-white/15" aria-label="GitHub">GH</a>
       <a id="social-in" target="_blank" rel="noopener" class="glass grid h-10 w-10 place-items-center rounded-full text-xs font-semibold transition hover:bg-white/15" aria-label="LinkedIn">in</a>
       <a id="social-mail" class="glass grid h-10 w-10 place-items-center rounded-full text-xs font-semibold transition hover:bg-white/15" aria-label="Email">@</a>
+      <a id="to-lite" href="?lite=1" class="glass grid h-10 min-w-[2.5rem] place-items-center rounded-full px-2 text-xs font-semibold transition hover:bg-white/15" aria-label="Switch to the simple 2D view" title="Simple 2D view (no 3D)">2D</a>
     </div>
   </header>
 
   <!-- Mobile bottom nav -->
-  <nav id="mnav" class="glass fixed inset-x-3 bottom-3 z-20 flex justify-between rounded-full p-1.5 md:hidden" aria-label="Sections">
-    <button data-view="home" class="nav-btn is-active !px-3 !text-xs">Home</button>
-    <button data-view="about" class="nav-btn !px-3 !text-xs">About</button>
-    <button data-view="sliit" class="nav-btn !px-3 !text-xs">Education</button>
-    <button data-view="nupa" class="nav-btn !px-3 !text-xs">NupaStack</button>
-    <button data-view="labs" class="nav-btn !px-3 !text-xs">Projects</button>
+  <nav id="mnav" class="glass fixed inset-x-3 bottom-3 z-20 flex justify-between gap-0.5 rounded-full p-1.5 md:hidden" aria-label="Sections">
+    <button data-view="home" class="nav-btn is-active min-h-[40px] flex-1 !px-1 !text-[11px] min-[380px]:!text-xs">Home</button>
+    <button data-view="about" class="nav-btn min-h-[40px] flex-1 !px-1 !text-[11px] min-[380px]:!text-xs">About</button>
+    <button data-view="sliit" class="nav-btn min-h-[40px] flex-1 !px-1 !text-[11px] min-[380px]:!text-xs">Education</button>
+    <button data-view="nupa" class="nav-btn min-h-[40px] flex-1 !px-1 !text-[11px] min-[380px]:!text-xs">NupaStack</button>
+    <button data-view="labs" class="nav-btn min-h-[40px] flex-1 !px-1 !text-[11px] min-[380px]:!text-xs">Projects</button>
   </nav>
 
   <!-- Hint -->
   <div id="hint" class="pointer-events-none fixed inset-x-0 bottom-20 z-10 flex justify-center px-4 transition-opacity duration-700 md:bottom-6">
-    <p class="glass rounded-full px-5 py-2 text-center text-xs text-white/85 sm:text-sm">Drag to look around · Scroll or pinch to zoom · Tap a building to explore</p>
+    <p class="glass rounded-2xl px-5 py-2 text-center text-xs text-white/85 sm:rounded-full sm:text-sm">Drag to look around · Scroll or pinch to zoom · Tap a building to explore</p>
   </div>
 
   <!-- Hover tooltip -->
   <div id="tip" class="glass pointer-events-none fixed left-0 top-0 z-20 rounded-full px-3 py-1 text-xs font-medium opacity-0 transition-opacity"></div>
 
+  <!-- View controls: zoom in / out / reset (mouse, touch and keyboard users) -->
+  <div id="ctl" data-mode="island" data-hidden="false" role="group" aria-label="View controls">
+    <button id="ctl-in" class="glass grid h-10 w-10 place-items-center rounded-full text-xl leading-none transition hover:bg-white/15" aria-label="Zoom in" title="Zoom in (+)">+</button>
+    <button id="ctl-out" class="glass grid h-10 w-10 place-items-center rounded-full text-xl leading-none transition hover:bg-white/15" aria-label="Zoom out" title="Zoom out (−)">−</button>
+    <button id="ctl-reset" class="glass grid h-10 w-10 place-items-center rounded-full text-base leading-none transition hover:bg-white/15" aria-label="Reset view" title="Reset view (0)">⟲</button>
+  </div>
+
+  <!-- Messages -->
+  <div id="toast" data-show="false" role="status" aria-live="polite" class="glass rounded-2xl px-4 py-2.5 text-sm text-white shadow-2xl"></div>
+
   <!-- Inside My Projects Lab -->
   <div id="lab-ui" class="hidden">
-    <button id="lab-exit" class="glass fixed left-4 top-20 z-20 rounded-full px-4 py-2 text-sm font-medium transition hover:bg-white/15 sm:left-6 sm:top-24">← Back to island</button>
+    <button id="lab-exit" class="glass fixed left-4 z-20 min-h-[40px] rounded-full px-4 py-2 text-sm font-medium transition hover:bg-white/15 sm:left-6">← Back to island</button>
     <button id="lab-prev" class="glass fixed left-3 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full text-3xl leading-none transition hover:scale-110 hover:bg-white/20 sm:left-6 sm:h-14 sm:w-14" aria-label="Previous project">‹</button>
     <button id="lab-next" class="glass fixed right-3 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full text-3xl leading-none transition hover:scale-110 hover:bg-white/20 sm:right-6 sm:h-14 sm:w-14" aria-label="Next project">›</button>
-    <div class="pointer-events-none fixed inset-x-0 bottom-4 z-20 flex flex-col items-center gap-2 px-16 sm:bottom-6">
+    <div id="lab-bottom" class="pointer-events-none fixed inset-x-0 z-20 flex flex-col items-center gap-2 px-16">
       <p id="lab-title" class="glass max-w-full truncate rounded-full px-5 py-2 text-xs font-semibold sm:text-sm"></p>
       <div id="lab-dots" class="flex items-center gap-2"></div>
-      <p class="text-center text-[11px] text-white/70 sm:text-xs">Click the model to open its website · Click the laptop on the table to read the project details</p>
+      <p id="lab-help" class="text-center text-[11px] text-white/70 sm:text-xs">Click the model to open its website · Click the laptop on the table to read the project details</p>
     </div>
-    <div id="lab-card" class="glass pointer-events-none fixed left-0 top-0 z-30 w-[360px] max-w-[90vw] rounded-2xl p-4 text-white opacity-0 shadow-2xl transition-opacity duration-200"></div>
+    <div id="lab-card" class="glass pointer-events-none fixed left-0 top-0 z-30 max-h-[75vh] w-[360px] max-w-[calc(100vw-1rem)] overflow-y-auto rounded-2xl p-4 text-white opacity-0 shadow-2xl transition-opacity duration-200" role="dialog" aria-label="Project"></div>
   </div>
   <!-- Project details reader (opens from the laptop) -->
   <div id="reader" class="fixed inset-0 z-[55] hidden items-center justify-center bg-[#0d0620]/70 p-3 opacity-0 backdrop-blur-sm transition-opacity duration-300 sm:p-6" role="dialog" aria-modal="true" aria-label="Project details">
-    <div class="glass flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl text-white shadow-2xl">
+    <div class="glass flex h-[calc(100dvh-1.5rem)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl text-white shadow-2xl sm:h-auto sm:max-h-[88vh]">
       <div class="flex items-center gap-3 border-b border-white/10 px-4 py-3">
         <span class="flex gap-1.5"><i class="h-3 w-3 rounded-full bg-[#ff6b6b]"></i><i class="h-3 w-3 rounded-full bg-[#ffd23a]"></i><i class="h-3 w-3 rounded-full bg-[#4cd964]"></i></span>
         <p id="r-url" class="min-w-0 flex-1 truncate rounded-full bg-white/10 px-3 py-1 text-xs text-white/70">project-details.md</p>
-        <button id="r-close" class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 text-lg leading-none transition hover:bg-white/20" aria-label="Close">×</button>
+        <button id="r-close" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-xl leading-none transition hover:bg-white/20" aria-label="Close">×</button>
       </div>
-      <div id="r-body" class="h-[min(62vh,540px)] overflow-y-auto p-5 sm:p-8"></div>
+      <div id="r-body" class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 sm:h-[min(62vh,540px)] sm:flex-none sm:p-8"></div>
     </div>
   </div>
   <div id="fade"class="pointer-events-none fixed inset-0 z-[45] bg-[#0d0620] opacity-0 transition-opacity duration-500"></div>
 
   <!-- Info panel -->
   <aside id="panel" data-open="false" class="glass overflow-y-auto rounded-3xl p-6 shadow-2xl" aria-live="polite">
-    <button id="p-close" class="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-white/10 text-lg leading-none transition hover:bg-white/20" aria-label="Close">×</button>
+    <div id="p-handle" class="-mx-6 -mt-4 mb-2 flex cursor-grab touch-none justify-center py-2 min-[900px]:hidden" aria-hidden="true"><span class="h-1.5 w-12 rounded-full bg-white/30"></span></div>
+    <button id="p-close" class="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-lg leading-none transition hover:bg-white/20" aria-label="Close">×</button>
     <p id="p-kicker" class="pr-10 text-xs font-semibold uppercase tracking-widest text-cyan-300"></p>
     <h2 id="p-title" class="mt-1 pr-8 text-2xl font-bold sm:text-3xl"></h2>
     <p id="p-text" class="mt-3 text-sm leading-relaxed text-white/80"></p>
@@ -101,6 +114,6 @@
   </aside>
 
   <noscript><p class="fixed inset-0 z-[60] grid place-items-center bg-[#1b1040] p-8 text-center">Please enable JavaScript to view the 3D portfolio.</p></noscript>
-  <script src="js/app.js?v=17" defer></script>
+  <script src="js/app.js?v=18" defer></script>
 </body>
 </html>

@@ -15,6 +15,8 @@ After editing run:  `npm install` (once) then `npm run build`
 - `index.html`        – page + Tailwind-styled UI (nav, panel, loader)
 - `src/world.js`      – the whole 3D scene (island, buildings, plaza, hologram, bridge, water, sky)
 - `src/textures.js`   – signs, facades, paving etc. painted on canvas (no image files to download)
+- `src/entry.js`      – start-up: checks WebGL and picks the 3D island or the 2D version
+- `src/lite.js`       – the simple 2D version (same content, no WebGL needed)
 - `src/main.js`       – renderer, camera, picking, UI wiring, adaptive quality, enter/exit of the Projects Lab
 - `src/lab.js`        – the Projects Lab interior (hall, reflective floor, all project showrooms: Preschool, Avurudu, Portfolio, TaskFlow, Poker, FoodWeb)
 - `src/labtextures.js` – screens, signs, sunset windows and Avurudu hologram panels painted on canvas
@@ -61,3 +63,14 @@ MERN food ordering system (React, Vite, Node.js, Express, MongoDB, JWT, bcrypt):
 
 ## Branding
 The KP logo (`assets/logo.png`) is used on the loading screen, the top-left home button and as the favicon.
+
+## Works on every device
+- **Controls (mouse, touch, pen, keyboard):**
+  - Rotate: drag with one finger or the left mouse button.
+  - Zoom: pinch, scroll the wheel, pinch on a trackpad, or press `+` / `−`.
+  - Move around: drag with two fingers, or right-drag / Shift-drag with a mouse. On the island you can also use `W` `A` `S` `D`.
+  - Rotate with the keyboard: arrow keys on the island. Inside a building they switch rooms.
+  - Reset: the ⟲ button or `0`. The on-screen `+` `−` ⟲ buttons work everywhere.
+- **Phones:** rooms are framed closer so the panels are readable, and a swipe slides across the room. Tapping a model opens a small sheet with "Open website" and "Read details", so nobody leaves the page by accident. The info panel is a bottom sheet you can drag down to close. The details reader fills the screen.
+- **Layout:** respects notches and the home bar (safe areas), hides helper text on short landscape screens, and turns animations down when "reduce motion" is set.
+- **2D version (`?lite=1`):** the same content as a normal scrolling page, with the rooms' screens as project thumbnails. It opens automatically when the device has no WebGL, when the 3D scene fails to start, or when the graphics chip resets. Visitors can also choose it with the **2D** button, from a link on the loading screen when loading is slow, or from a prompt when the 3D view runs too slowly. **View in 3D** switches back. The choice is remembered on that device.

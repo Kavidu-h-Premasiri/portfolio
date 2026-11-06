@@ -5,6 +5,10 @@
 @layer base {
   html, body { height: 100%; }
   body { background: #2a1450; overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+  /* no double-tap zoom delay on controls */
+  button, a, summary { touch-action: manipulation; }
+  :focus-visible { outline: 2px solid #67e8f9; outline-offset: 2px; }
+  summary::-webkit-details-marker { display: none; }
 }
 
 @layer components {
@@ -12,15 +16,52 @@
   .nav-btn { @apply rounded-full px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white; }
   .nav-btn.is-active { @apply bg-white/15 text-white shadow-[0_0_18px_rgba(120,200,255,.35)]; }
 
-  #panel { @apply fixed z-30 text-white transition-all duration-500 ease-out; }
+  #panel { @apply fixed z-30 text-white transition-all duration-500 ease-out; overscroll-behavior: contain; }
   #panel[data-open="false"] { @apply pointer-events-none opacity-0; }
   #panel[data-open="true"] { @apply opacity-100; }
   @media (min-width: 900px) {
     #panel { @apply right-6 top-24 w-[420px] max-h-[calc(100%-8rem)]; }
     #panel[data-open="false"] { transform: translateX(40px); }
   }
+  /* phones & tablets: bottom sheet above the bottom nav (drag the handle down to close) */
   @media (max-width: 899px) {
-    #panel { @apply inset-x-3 bottom-[4.6rem] max-h-[44%]; }
+    #panel { @apply inset-x-3 pt-4; bottom: calc(4.6rem + env(safe-area-inset-bottom)); max-height: min(62vh, 560px); max-height: min(62dvh, 560px); }
     #panel[data-open="false"] { transform: translateY(40px); }
   }
+}
+
+/* ───────── layout that follows the device's safe areas (notches, home bar) ───────── */
+#top-bar { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }
+@media (min-width: 640px) { #top-bar { padding-top: max(1.5rem, env(safe-area-inset-top)); padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right)); } }
+#mnav { bottom: calc(0.75rem + env(safe-area-inset-bottom)); left: max(0.75rem, env(safe-area-inset-left)); right: max(0.75rem, env(safe-area-inset-right)); }
+
+#hint { bottom: calc(5rem + env(safe-area-inset-bottom)); }
+@media (min-width: 768px) { #hint { bottom: 1.5rem; } }
+
+/* view controls: column at the bottom-right on the island, row at the top-right inside a building */
+#ctl { position: fixed; z-index: 20; display: flex; flex-direction: column; gap: 0.5rem; transition: opacity 0.3s;
+  right: max(0.75rem, env(safe-area-inset-right)); bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
+@media (min-width: 768px) { #ctl { right: 1.5rem; bottom: 1.5rem; } }
+#ctl[data-mode="lab"] { flex-direction: row; bottom: auto; top: calc(4.75rem + env(safe-area-inset-top)); }
+@media (min-width: 640px) { #ctl[data-mode="lab"] { top: calc(6rem + env(safe-area-inset-top)); } }
+#ctl[data-hidden="true"] { opacity: 0; pointer-events: none; }
+
+#lab-exit { top: calc(4.75rem + env(safe-area-inset-top)); }
+@media (min-width: 640px) { #lab-exit { top: calc(6rem + env(safe-area-inset-top)); } }
+#lab-prev { left: max(0.75rem, env(safe-area-inset-left)); }
+#lab-next { right: max(0.75rem, env(safe-area-inset-right)); }
+#lab-bottom { bottom: calc(1rem + env(safe-area-inset-bottom)); }
+
+#toast { position: fixed; left: 50%; z-index: 60; display: flex; align-items: center; gap: 0.75rem; max-width: calc(100vw - 1.5rem);
+  bottom: calc(6rem + env(safe-area-inset-bottom)); transform: translate(-50%, 10px); opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s; }
+#toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+
+/* short screens (phones in landscape): drop secondary text so the 3D view keeps the space */
+@media (max-height: 480px) {
+  #lab-help, #hint { display: none; }
+  #lab-bottom { bottom: calc(0.5rem + env(safe-area-inset-bottom)); }
+  #toast { bottom: calc(4.25rem + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }

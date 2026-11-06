@@ -46,6 +46,13 @@ function mirrored(content) {
   m.scale.y = -1; w.add(m); return w;
 }
 
+// which project rooms each walk-in building shows (also used by the 2D version)
+export const ROOMS_BY_HALL = {
+  lab: ['preschool', 'avurudu', 'portfolio', 'taskflow', 'poker', 'food'],
+  sliit: ['preschool', 'poker', 'food'],
+  nupa: ['nupa'],
+};
+
 // ═════════════════════════════════════════════════════════════
 export function buildLab({ mobile = false, theme = 'lab' } = {}) {
   const U = theme === 'sliit';
@@ -635,7 +642,8 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
     return { key: 'food', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
   };
 
-  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkPoker(), mkFood()] : [mkPreschool(), mkAvurudu(), mkPortfolio(), mkTaskflow(), mkPoker(), mkFood()];
+  const makers = { preschool: mkPreschool, avurudu: mkAvurudu, portfolio: mkPortfolio, taskflow: mkTaskflow, poker: mkPoker, food: mkFood, nupa: mkNupa };
+  const rooms = (ROOMS_BY_HALL[theme] || ROOMS_BY_HALL.lab).map((k) => makers[k]());
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
   let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;
