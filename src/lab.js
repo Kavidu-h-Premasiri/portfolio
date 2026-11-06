@@ -422,7 +422,7 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
     return { key: 'nupa', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
   };
 
-  const rooms = theme === 'nupa' ? [mkNupa()] : [mkPreschool(), mkAvurudu(), mkPortfolio()];
+  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkAvurudu()] : [mkPreschool(), mkAvurudu(), mkPortfolio()];
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
   let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;
