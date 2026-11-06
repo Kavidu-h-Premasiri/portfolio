@@ -47,8 +47,12 @@ function mirrored(content) {
 }
 
 // ═════════════════════════════════════════════════════════════
-export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
-  const TH = { bg: 0xa9c4e4, hemi: [0xffffff, 0xf0e6d2, 2.9], key: [0xfff0d8, 2.0], rim: [0xbcd4ff, 1.0], ceil: 0xf1ead8, cove: 0xff9a3a, dark: 0x1c2a5c, pillar: 0x1c2a5c, sofa: 0x2a3a78, pool: 0xffe2a8, sky: L.windowSkyDay(), wall: L.wallTextureDay(), sign: L.sliitPillarSign(), plate: 'Student Projects Gallery', banner: L.uniBanner() };
+export function buildLab({ mobile = false, theme = 'lab' } = {}) {
+  const U = theme === 'sliit';
+  const TH = U
+    ? { bg: 0xa9c4e4, hemi: [0xffffff, 0xf0e6d2, 2.9], key: [0xfff0d8, 2.0], rim: [0xbcd4ff, 1.0], ceil: 0xf1ead8, cove: 0xff9a3a, dark: 0x1c2a5c, pillar: 0x1c2a5c, sofa: 0x2a3a78, pool: 0xffe2a8, sky: L.windowSkyDay(), wall: L.wallTextureDay(), sign: L.sliitPillarSign(), plate: 'Student Projects Gallery', banner: L.uniBanner() }
+    : theme === 'nupa' ? { bg: 0x1a1040, hemi: [0xf4eaff, 0xb8a8d8, 2.8], key: [0xffe0c0, 2.0], rim: [0xa8b8ff, 1.2], ceil: 0x7a5636, cove: 0xa56bff, dark: 0x1e1b4a, pillar: 0xe9e4f6, sofa: 0x3a3552, pool: 0xb89cff, sky: L.windowSky(), wall: L.wallTexture(1) }
+    : { bg: 0x15092f, hemi: [0xffe6d0, 0x7a64a8, 2.7], key: [0xffc690, 2.0], rim: [0x93a8ff, 1.3], ceil: 0x5a4478, cove: 0x3a8aff, dark: 0x1b1632, pillar: 0x2a2230, sofa: 0xcdbfae, pool: 0xffb060, sky: L.windowSky(), wall: L.wallTexture(1), sign: L.labSign(), plate: 'My Projects Showcase', banner: L.laurelBanner() };
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(TH.bg);
   const rand = T.rng(77);
@@ -135,7 +139,7 @@ export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
   };
 
   // ═════════ ROOM 1 : Preschool Management System ═════════
-  const preschool = (() => {
+  const mkPreschool = () => {
     const { B, k, g } = mk(), picks = [], Y = 1.36;
     // podium
     k.cyl('lit', 0x0f1a48, 0, 0.6, 0, 7.0, 1.2); k.cyl('lit', 0x5ab548, 0, 1.28, 0, 6.7, 0.16);
@@ -203,10 +207,10 @@ export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
     const hover = hoverRing(7.05, 1.22, 0x66d0ff); g.add(hover);
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(7.4, 7.4, 8, 12), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 4.8; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
     return { key: 'preschool', group: mirrored(g), picks, hover, desk: dk, cam: { x: 0, y: 4.6, d: 24 } };
-  })();
+  };
 
   // ═════════ ROOM 2 : Avurudu Auspicious Times ═════════
-  const avurudu = (() => {
+  const mkAvurudu = () => {
     const { B, k, g } = mk(), picks = [], Y = 1.36, upd = [];
     k.cyl('lit', 0x2a2330, 0, 0.6, 0, 7.8, 1.2); k.cyl('lit', 0x4f8f3a, 0, 1.28, 0, 7.5, 0.16);
     k.tor('glow', 0xf0b848, 7.8, 0.09, 0, 1.2, 0); k.tor('glow', 0x46b0ff, 8.25, 0.09, 0, 0.1, 0); k.tor('glow', 0x46b0ff, 7.85, 0.05, 0, 0.35, 0);
@@ -288,11 +292,84 @@ export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 8.5, 12), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit);
     updaters.push((t) => upd.forEach((f) => f(t)));
     return { key: 'avurudu', group: mirrored(g), picks: [dk.hit, hit], hover, desk: dk, cam: { x: 0, y: 4.8, d: 25 } };
-  })();
+  };
 
-  const rooms = [preschool, avurudu];
+
+  // ═════════ NupaStack Website – 3D Enhancement ═════════
+  const mkNupa = () => {
+    const { B, k, g } = mk(), picks = [], Y = 0.92;
+    const ell = (geo, c, y, r, sz = 0.8) => B.add('glow', geo, c, { x: 0, y, z: 0, sz });
+    k.cyl('lit', 0x1c1b4a, 0, 0.46, 0, 8.0, 0.92, 1, 0.8); k.cyl('lit', 0x35316c, 0, Y - 0.04, 0, 7.7, 0.08, 1, 0.8);
+    ell(new THREE.TorusGeometry(8.0, 0.09, 6, 90).rotateX(Math.PI / 2), 0xa56bff, 0.86); ell(new THREE.TorusGeometry(8.0, 0.07, 6, 90).rotateX(Math.PI / 2), 0xa56bff, 0.3); ell(new THREE.TorusGeometry(8.6, 0.08, 6, 90).rotateX(Math.PI / 2), 0xffb348, 0.1);
+    // back structure: logo tower, screen wall, overview panel, header
+    const edge = (x, y, z, w, h, c = 0x8f7bff) => { k.box('glow', c, x, y + h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x, y - h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x - w / 2, y, z, 0.08, h, 0.1); k.box('glow', c, x + w / 2, y, z, 0.08, h, 0.1); };
+    k.box('lit', 0x1c2358, -5.9, Y + 3.7, -2.7, 4.4, 7.4, 0.8); g.add(plane(L.nupaLogoWall(), 4.0, 6.3, -5.9, Y + 3.7, -2.28, 0, { transparent: false })); edge(-5.9, Y + 3.7, -2.22, 4.0, 6.3);
+    k.box('lit', 0x161b4a, 0.6, Y + 4.1, -3.3, 8.6, 6.9, 0.6); g.add(plane(L.nupaScreen(), 7.4, 4.5, 0.6, Y + 4.2, -2.98, 0, { transparent: false })); edge(0.6, Y + 4.2, -2.94, 7.4, 4.5, 0x6fb0ff);
+    k.box('lit', 0x1c2358, 6.4, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.nupaOverview(), 3.9, 6.4, 6.4, Y + 3.7, -2.28, 0, { transparent: false })); edge(6.4, Y + 3.7, -2.22, 3.9, 6.4);
+    g.add(plane(L.nupaHeader(), 9.6, 2.26, 0.6, Y + 8.5, -3.1)); k.box('glow', 0xc9bcff, 0.6, Y + 7.4, -3.0, 6.6, 0.07, 0.07);
+    // 3D building model on a round plinth – its own rotatable group (drag it, or let it turn slowly)
+    const bx = -5.9, by = Y + 0.6, bz = 2.2;
+    k.cyl('lit', 0x2c2a62, bx, Y + 0.3, bz + 0.2, 3.2, 0.6); B.add('glow', new THREE.TorusGeometry(3.2, 0.07, 6, 60).rotateX(Math.PI / 2), 0xa56bff, { x: bx, y: Y + 0.58, z: bz + 0.2 });
+    const bd = new THREE.Group(); bd.position.set(bx, by, bz); bd.userData.anim = { type: 'bld' };
+    { const Bb = new Batch(), kb = kit(Bb, rand);
+      kb.box('lit', 0x25306e, 0, 1.5, 0, 3.8, 3.0, 2.2); kb.box('lit', 0x2f3b82, -2.1, 2.1, -0.2, 1.4, 4.2, 1.8); kb.box('lit', 0x35468e, 0, 3.1, 0, 4.0, 0.22, 2.4);
+      kb.box('glow', 0xa56bff, 0, 3.25, 1.2, 4.0, 0.07, 0.07); kb.box('glow', 0xa56bff, 0, 3.25, -1.2, 4.0, 0.07, 0.07); kb.box('glow', 0xa56bff, 0, 0.12, 1.12, 3.8, 0.07, 0.07);
+      for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) kb.box('glow', 0x7cd6ff, sx * 1.92, 1.0 + i * 0.7, 0.2 - i * 0.0, 0.05, 0.4, 0.8);
+      for (let i = 0; i < 4; i++) kb.box('glow', 0x7cd6ff, -1.3 + i * 0.9, 1.6, -1.12, 0.6, 0.9, 0.05);
+      kb.box('lit', 0x14183a, 0, 0.7, 1.14, 0.9, 1.2, 0.05);
+      kb.cyl('lit', 0x4a5aa0, -0.8, 3.55, 0, 0.05, 0.8); kb.cyl('lit', 0x4a5aa0, 1.8, 3.55, 0, 0.05, 0.8); kb.box('glow', 0xa56bff, 0.5, 3.17, 0, 3.7, 0.05, 0.12);
+      bd.add(Bb.build('lit', lit()), Bb.build('glow', glow())); }
+    bd.add(plane(T.facadeTexture('nupa'), 3.6, 2.5, 0, 1.55, 1.13, 0, { transparent: false }));
+    { const sg = T.signTexture('nupa'); bd.add(plane(sg, 3.6, 0.9, 0.5, 4.0, 0.08, 0, { side: THREE.DoubleSide }), plane(sg, 3.6, 0.9, 0.5, 4.0, -0.08, Math.PI, { side: THREE.DoubleSide })); }
+    g.add(bd);
+    const bhit = new THREE.Mesh(new THREE.CylinderGeometry(2.9, 2.9, 5.6, 16), new THREE.MeshBasicMaterial()); bhit.visible = false; bhit.position.set(bx, by + 2.6, bz); bhit.userData.kind = 'bld'; g.add(bhit); picks.push(bhit);
+    k.cyl('lit', 0x2a3a5a, bx, by + 0.05, bz + 2.7, 1.1, 0.12); k.cyl('glow', 0x5fd0ff, bx, by + 0.14, bz + 2.7, 0.8, 0.04);
+    for (const [tx, tz, s] of [[-3.9, 3.2, 1], [-7.9, 3.2, 1.05], [-3.6, 1.2, 0.8], [-8.2, 1.4, 0.85]]) { k.cone('lit', 0x6a4528, tx, by + 0.55 * s, tz, 0.12 * s, 1.1 * s); for (let i = 0; i < 5; i++) { const a = rand() * 6.28, r = rand() * 0.45; k.ico('lit', [0xf08acb, 0xd47ae8, 0xffb0dd][i % 3], tx + Math.cos(a) * r, by + (1.35 + rand() * 0.5) * s, tz + Math.sin(a) * r, (0.42 + rand() * 0.2) * s, 0.85); } }
+    // kiosk: View Project Details
+    k.box('lit', 0x3a3868, 0.9, Y + 0.65, 4.0, 2.3, 1.3, 1.5); k.box('glow', 0x8f7bff, 0.9, Y + 0.08, 4.76, 2.3, 0.06, 0.05); k.box('glow', 0x8f7bff, 0.9, Y + 1.3, 3.25, 2.3, 0.06, 0.05);
+    { const kp = plane(L.nupaKiosk(), 2.3, 1.38, 0.9, Y + 1.58, 4.05, 0, { transparent: false }); kp.rotation.x = -0.95; g.add(kp); }
+    const kh = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.2, 2.0), new THREE.MeshBasicMaterial()); kh.visible = false; kh.position.set(0.9, Y + 1.0, 4.0); kh.userData.kind = 'laptop'; g.add(kh); picks.push(kh);
+    // banners, chandelier, cove
+    const banner = (x, l1, l2, ic, l3, tilt) => g.add(plane(L.nupaBanner(l1, l2, ic, l3), 2.7, 8.1, x, 8.2, -5.5, tilt));
+    banner(-14.1, 'Cloud', 'Audit', 'cloud', 'Cut cloud waste', 0.18); banner(-11.2, 'DevOps', 'Retainer', 'loop', 'Run & improve', 0.18); k.box('glow', 0xc9bcff, -12.65, 12.4, -5.5, 6.0, 0.14, 0.2);
+    banner(11.2, 'Secure', 'by Design', 'shield', 'Best practices', -0.18); banner(14.1, 'Build', '& Deploy', 'cube', 'Implementation', -0.18); k.box('glow', 0xc9bcff, 12.65, 12.4, -5.5, 6.0, 0.14, 0.2);
+    k.tor('glow', 0xffffff, 6.2, 0.18, 0, 11.6, -1); k.tor('glow', 0xc9bcff, 5.0, 0.1, 0, 11.0, -1);
+    for (const a of [0.8, 2.4, 3.9, 5.5]) k.box('glow', 0xc9bcff, Math.cos(a) * 5.6, 12.4, Math.sin(a) * 5.6 - 1, 0.05, 1.5, 0.05);
+    for (const [w, d, x, z, c] of [[32, 0.14, 0, -12, TH.cove], [32, 0.14, 0, 8, TH.cove], [0.14, 20, -16, -2, TH.cove], [0.14, 20, 16, -2, TH.cove]]) k.box('glow', c, x, 12.9, z, w, 0.14, d);
+    // ── creative fill: server racks, floating cloud, infinity loop, tool cubes, info stands ──
+    const anim = (o, a) => { o.userData.anim = a; return o; };
+    for (const [rx, rz, ry] of [[-12.6, -1.6, 0.35], [-14.4, -0.4, 0.35]]) k.local(rx, 0, rz, ry, () => {
+      k.box('lit', 0x1b1f4f, 0, Y + 1.7, 0, 1.5, 3.4, 1.1); k.box('lit', 0x2c3270, 0, Y + 3.45, 0, 1.6, 0.12, 1.2);
+      for (let i = 0; i < 6; i++) { k.box('lit', 0x0e1233, 0, Y + 0.5 + i * 0.5, 0.57, 1.3, 0.36, 0.05); k.box('glow', i % 2 ? 0x2de2c8 : 0xa56bff, -0.5, Y + 0.5 + i * 0.5, 0.61, 0.08, 0.08, 0.03); k.box('glow', 0x7cd6ff, 0.15, Y + 0.5 + i * 0.5, 0.61, 0.5, 0.05, 0.03); }
+    });
+    { const cl = new THREE.Group(); const wm = new THREE.MeshBasicMaterial({ color: 0xe9e4ff, toneMapped: false });
+      for (const [x, y, r] of [[-1.1, 0, 0.8], [0, 0.45, 1.05], [1.15, 0.05, 0.85], [0.1, -0.25, 1.0]]) { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), wm); m.position.set(x, y, 0); cl.add(m); }
+      cl.scale.set(1, 0.8, 0.8); cl.position.set(-13.6, Y + 7.2, 3.2); cl.userData.y0 = cl.position.y; anim(cl, { type: 'bob', amp: 0.35, sp: 0.8, ph: 0 }); g.add(cl);
+      const glo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xa56bff, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); glo.scale.set(7, 4.4, 1); glo.position.set(-13.6, Y + 7.2, 3.0); g.add(glo); }
+    { const lp = new THREE.Group(); const gm = new THREE.MeshBasicMaterial({ color: 0x2de2c8, toneMapped: false });
+      for (const sx of [-1, 1]) { const t = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.12, 8, 40), gm); t.position.x = sx * 0.95; lp.add(t); }
+      lp.position.set(14.2, Y + 7.0, 1.6); lp.userData.y0 = lp.position.y; anim(lp, { type: 'spin', sp: 0.9, bob: 0.3 }); g.add(lp);
+      const gl2 = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0x2de2c8, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false })); gl2.scale.set(6, 3.6, 1); gl2.position.set(14.2, Y + 7.0, 1.4); g.add(gl2); }
+    [[0xe44d26, -9.9, 9.4], [0x2965f1, -8.3, 10.4], [0xf7df1e, 8.6, 10.4], [0xffffff, 10.0, 9.4]].forEach(([c, x, y], i) => {
+      const cu = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.9), new THREE.MeshBasicMaterial({ color: c, toneMapped: false })); cu.position.set(x, Y + y - 1.2, -1.0); cu.userData.y0 = cu.position.y; anim(cu, { type: 'spin', sp: 0.6 + i * 0.1, bob: 0.25, ph: i }); g.add(cu);
+    });
+    for (const [px, pz, ry, kind] of [[-10.6, 7.4, 0.5, 'stack'], [14.6, 1.0, -0.5, 'high']]) {
+      k.cyl('lit', 0x2c2a62, px, Y + 0.2, pz, 0.9, 0.4); k.cyl('lit', 0x4a5aa0, px, Y + 1.3, pz, 0.1, 2.2);
+      const pn = plane(L.nupaPanel(kind), 2.6, 3.65, px, Y + 3.6, pz, ry, { transparent: false }); g.add(pn);
+      k.local(px, Y + 3.6, pz, ry, () => { const w = 2.6, h = 3.65; k.box('glow', 0x8f7bff, 0, h / 2, 0.02, w + 0.14, 0.07, 0.05); k.box('glow', 0x8f7bff, 0, -h / 2, 0.02, w + 0.14, 0.07, 0.05); k.box('glow', 0x8f7bff, -w / 2, 0, 0.02, 0.07, h, 0.05); k.box('glow', 0x8f7bff, w / 2, 0, 0.02, 0.07, h, 0.05); });
+    }
+    for (const [fx, fz] of [[-9.0, 5.8], [12.0, 4.0], [5.0, 7.8]]) { k.cyl('lit', 0x2c2a62, fx, Y + 0.3, fz, 0.5, 0.6); for (let i = 0; i < 6; i++) { const a = i * 1.05; k.cone('lit', 0x3fcf9a, fx + Math.cos(a) * 0.18, Y + 0.95, fz + Math.sin(a) * 0.18, 0.14, 0.9 + (i % 3) * 0.2, Math.cos(a) * 0.35, -Math.sin(a) * 0.35); } }
+    const dk = desk(g, k, { x: 9.4, z: 6.2, ry: -0.5, title: 'NupaStack Website – 3D Enhancement', accent: '#a890ff', accentHex: 0xa56bff }); picks.push(dk.hit);
+    g.add(B.build('lit', lit()), B.build('glow', glow()));
+    const hover = hoverRing(8.0, 0.9, 0xb9a4ff); hover.scale.z = 0.8; g.add(hover);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 9, 14).scale(1, 1, 0.8), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
+    const grp = mirrored(g), anims = []; grp.traverse((o) => { if (o.userData.anim) anims.push(o); });
+    return { key: 'nupa', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
+  };
+
+  const rooms = theme === 'nupa' ? [mkNupa()] : [mkPreschool(), mkAvurudu()];
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
-  let cur = 0, from = -1, tr = 1, dir = 1;
+  let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;
 
   const ease = (x) => 1 - Math.pow(1 - x, 3);
@@ -306,6 +383,14 @@ export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
     },
     update(t, dt, hoverModel, hoverLaptop) {
       for (const u of updaters) u(t, dt);
+      const R = rooms[cur];
+      if (R.anims) {
+        if (performance.now() - bldDrag > 2200) bldAng += dt * 0.35;
+        for (const o of R.anims) { const a = o.userData.anim;
+          if (a.type === 'bld') o.rotation.y = bldAng;
+          else if (a.type === 'bob') o.position.y = o.userData.y0 + Math.sin(t * a.sp + (a.ph || 0)) * a.amp;
+          else if (a.type === 'spin') { o.rotation.y = t * a.sp; o.rotation.x = t * a.sp * 0.5; if (a.bob) o.position.y = o.userData.y0 + Math.sin(t * 1.1 + (a.ph || 0)) * a.bob; } }
+      }
       if (tr < 1) {
         tr = Math.min(1, tr + dt * 1.6); const e = ease(tr);
         rooms[from].group.position.x = -dir * 40 * e; rooms[cur].group.position.x = dir * 40 * (1 - e);
@@ -316,8 +401,11 @@ export function buildLab({ mobile = false, theme = 'sliit' } = {}) {
     },
     pick(raycaster) {
       const hits = raycaster.intersectObjects(rooms[cur].picks, false);
-      return hits.length ? hits[0].object.userData.kind : null;
+      if (!hits.length) return null;
+      const ks = hits.map((h) => h.object.userData.kind);
+      return ks.includes('laptop') ? 'laptop' : ks.includes('bld') ? 'bld' : ks[0];
     },
+    dragBld(d) { bldAng += d; bldDrag = performance.now(); },
     transitioning: () => tr < 1,
   };
 }

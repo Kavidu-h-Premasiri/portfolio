@@ -7,8 +7,69 @@ const tex = (c, aniso = 4) => { const t = new THREE.CanvasTexture(c); t.colorSpa
 const rr = (x, X, Y, W, H, R) => { x.beginPath(); if (x.roundRect) x.roundRect(X, Y, W, H, R); else x.rect(X, Y, W, H); };
 
 // ───────── big sunset window wall ─────────
+export function windowSky() {
+  const W = 2048, H = 1024, [c, x] = mk(W, H), r = rng(21);
+  const g = x.createLinearGradient(0, 0, 0, H * 0.72);
+  g.addColorStop(0, '#2c2480'); g.addColorStop(0.35, '#7a45b8'); g.addColorStop(0.65, '#e467a0'); g.addColorStop(1, '#ffa56e');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 14; i++) { // clouds
+    const px = r() * W, py = 120 + r() * 300, rad = 80 + r() * 160;
+    const cg = x.createRadialGradient(px, py, 0, px, py, rad); cg.addColorStop(0, 'rgba(255,170,200,.35)'); cg.addColorStop(1, 'rgba(255,170,200,0)');
+    x.fillStyle = cg; x.fillRect(px - rad, py - rad, rad * 2, rad * 2);
+  }
+  const ridge = (base, amp, f, col, ph) => {
+    x.beginPath(); x.moveTo(0, H);
+    for (let i = 0; i <= 128; i++) { const t = i / 128; x.lineTo(t * W, base - amp * (0.5 + 0.3 * Math.sin(t * f + ph) + 0.15 * Math.sin(t * f * 2.7 + ph * 2) + 0.07 * Math.sin(t * f * 6 + ph))); }
+    x.lineTo(W, H); x.closePath(); x.fillStyle = col; x.fill();
+  };
+  ridge(640, 190, 9, '#7a58a8', 1); ridge(700, 170, 11, '#523f8a', 3); ridge(770, 120, 14, '#34306c', 5);
+  x.fillStyle = '#1c1a40'; x.fillRect(0, 800, W, H - 800);
+  for (let i = 0; i < 220; i++) { // garden bokeh lights
+    const px = r() * W, py = 790 + r() * 220, rad = 3 + r() * 9;
+    x.fillStyle = r() > 0.5 ? 'rgba(255,200,110,.85)' : 'rgba(255,150,210,.75)';
+    x.beginPath(); x.arc(px, py, rad, 0, 7); x.fill();
+  }
+  const bloom = (cx, cy, spread, n) => { // blossom trees
+    x.strokeStyle = '#2a1a3a'; x.lineWidth = 14; x.beginPath(); x.moveTo(cx, 1000); x.quadraticCurveTo(cx + 20, cy + 250, cx - 10, cy + 100); x.stroke();
+    for (let i = 0; i < n; i++) {
+      const px = cx + (r() - 0.5) * spread, py = cy + (r() - 0.5) * spread * 0.7, rad = 14 + r() * 38;
+      x.fillStyle = `rgba(${240 + r() * 15},${120 + r() * 70},${200 + r() * 40},${0.55 + r() * 0.4})`;
+      x.beginPath(); x.arc(px, py, rad, 0, 7); x.fill();
+    }
+  };
+  bloom(120, 560, 420, 140); bloom(420, 620, 300, 70); bloom(1700, 580, 400, 130); bloom(1950, 540, 320, 90);
+  // mullions
+  x.fillStyle = 'rgba(14,10,34,.92)';
+  for (let i = 0; i <= 8; i++) x.fillRect(i * (W / 8) - 6, 0, 12, H);
+  for (const y of [0.33, 0.66]) x.fillRect(0, H * y - 5, W, 10);
+  const sh = x.createLinearGradient(0, 0, W, H); sh.addColorStop(0.35, 'rgba(255,255,255,0)'); sh.addColorStop(0.5, 'rgba(255,255,255,.10)'); sh.addColorStop(0.65, 'rgba(255,255,255,0)');
+  x.fillStyle = sh; x.fillRect(0, 0, W, H);
+  return tex(c, 4);
+}
 
 // side wall of the hall: warm lit glass, balcony levels, hanging greens
+export function wallTexture(seed = 1) {
+  const W = 1024, H = 512, [c, x] = mk(W, H), r = rng(seed * 13 + 5);
+  x.fillStyle = '#1b1735'; x.fillRect(0, 0, W, H);
+  const rows = [[0, 0.5], [0.5, 1]];
+  rows.forEach(([a, b], ri) => {
+    for (let i = 0; i < 12; i++) {
+      const X = 8 + i * (W / 12), w = W / 12 - 12, Y = a * H + 14, h = (b - a) * H - 28;
+      const g = x.createLinearGradient(0, Y, 0, Y + h);
+      const lit = r() > 0.2;
+      g.addColorStop(0, lit ? '#ffe6b0' : '#6a5a90'); g.addColorStop(1, lit ? '#ff9f58' : '#352a60');
+      x.fillStyle = g; x.fillRect(X, Y, w, h);
+      if (lit) { x.fillStyle = 'rgba(40,20,20,.6)'; x.fillRect(X + w * 0.3, Y + h * 0.55, w * 0.4, h * 0.08); }
+    }
+    x.fillStyle = '#ffd9a0'; x.fillRect(0, b * H - 16, W, 5); // glowing floor edge
+  });
+  for (let i = 0; i < 70; i++) { // hanging plants
+    x.strokeStyle = `rgba(60,${130 + r() * 60},80,.9)`; x.lineWidth = 3 + r() * 3;
+    const px = r() * W, py = (r() > 0.5 ? 0.5 : 0) * H;
+    x.beginPath(); x.moveTo(px, py + 8); x.lineTo(px + (r() - 0.5) * 14, py + 30 + r() * 60); x.stroke();
+  }
+  return tex(c, 4);
+}
 
 export function marbleTexture() {
   const S = 1024, [c, x] = mk(S, S), r = rng(31);
@@ -77,6 +138,22 @@ export function podiumTextTexture(text) {
   return tex(c, 4);
 }
 
+export function laurelBanner() {
+  const [c, x] = mk(256, 768);
+  x.beginPath(); x.moveTo(0, 0); x.lineTo(256, 0); x.lineTo(256, 700); x.lineTo(128, 590); x.lineTo(0, 700); x.closePath();
+  const g = x.createLinearGradient(0, 0, 0, 768); g.addColorStop(0, '#1b2760'); g.addColorStop(1, '#101a48'); x.fillStyle = g; x.fill();
+  x.strokeStyle = '#e9edff'; x.lineWidth = 3; x.stroke();
+  const cx = 128, cy = 215; x.fillStyle = '#fff';
+  for (const s of [-1, 1]) for (let i = 0; i < 11; i++) {
+    const f = 0.35 + i * 0.24, px = cx + s * Math.sin(f) * 86, py = cy + Math.cos(f) * 86 - 6;
+    x.beginPath(); x.ellipse(px, py, 17, 7, Math.atan2(-Math.sin(f), s * Math.cos(f)), 0, 7); x.fill();
+  }
+  x.strokeStyle = '#fff'; x.lineWidth = 4; x.lineJoin = 'round';
+  x.beginPath(); x.moveTo(cx, cy - 20); x.quadraticCurveTo(cx - 34, cy - 40, cx - 58, cy - 28); x.lineTo(cx - 58, cy + 26); x.quadraticCurveTo(cx - 32, cy + 12, cx, cy + 34); x.stroke();
+  x.beginPath(); x.moveTo(cx, cy - 20); x.quadraticCurveTo(cx + 34, cy - 40, cx + 58, cy - 28); x.lineTo(cx + 58, cy + 26); x.quadraticCurveTo(cx + 32, cy + 12, cx, cy + 34); x.stroke();
+  x.lineWidth = 3; for (let i = 0; i < 3; i++) { x.beginPath(); x.moveTo(cx - 48, cy - 14 + i * 12); x.lineTo(cx - 10, cy - 8 + i * 12); x.moveTo(cx + 48, cy - 14 + i * 12); x.lineTo(cx + 10, cy - 8 + i * 12); x.stroke(); }
+  return tex(c, 4);
+}
 
 export function galleryPlate(text = 'Student Projects Gallery') {
   const [c, x] = mk(1024, 192);
@@ -319,6 +396,18 @@ export function laptopLabel(text) {
   return tex(c, 4);
 }
 
+// "My Projects Lab" sign (replaces the old SLIIT sign in the background)
+export function labSign() {
+  const [c, x] = mk(1024, 512);
+  const g = x.createLinearGradient(0, 0, 1024, 512); g.addColorStop(0, '#1a1040'); g.addColorStop(1, '#2d1b5e'); x.fillStyle = g; x.fillRect(0, 0, 1024, 512);
+  x.strokeStyle = '#a56bff'; x.lineWidth = 8; x.strokeRect(14, 14, 996, 484);
+  x.save(); x.shadowColor = '#a56bff'; x.shadowBlur = 24; x.fillStyle = 'rgba(165,107,255,.18)'; rr(x, 62, 130, 230, 230, 40); x.fill(); x.strokeStyle = '#c9a8ff'; x.lineWidth = 8; x.stroke(); x.restore();
+  x.fillStyle = '#fff'; x.font = `700 112px ${FONT}`; x.textAlign = 'center'; x.fillText('</>', 177, 280);
+  x.textAlign = 'left'; x.shadowColor = '#c9a8ff'; x.shadowBlur = 14; x.fillStyle = '#fff';
+  x.font = `700 118px ${FONT}`; x.fillText('My Projects', 330, 240); x.font = `700 118px ${FONT}`; x.fillText('Lab', 330, 365);
+  x.shadowBlur = 0; x.fillStyle = '#ffd27a'; x.fillRect(330, 392, 560, 5);
+  return tex(c, 4);
+}
 
 // ───────── SLIIT University hall (daylight, navy + gold) ─────────
 export function windowSkyDay() {
@@ -359,5 +448,115 @@ export function uniBanner() {
   x.shadowBlur = 0; x.font = `600 25px ${FONT}`; x.fillStyle = '#f6d28a'; x.fillText('UNIVERSITY', 128, 402);
   x.fillStyle = '#f0b44a'; x.fillRect(58, 428, 140, 3);
   x.fillStyle = '#fff'; x.font = `500 24px ${FONT}`; x.fillText('Student', 128, 480); x.fillText('Projects', 128, 512);
+  return tex(c, 4);
+}
+
+// ───────── NupaStack showroom ─────────
+const nBg = (x, W, H, a = '#1b1450', b = '#3a1f86') => { const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, a); g.addColorStop(1, b); x.fillStyle = g; x.fillRect(0, 0, W, H); };
+const nLogo = (x, cx, cy, s, col = '#35c8ff') => { // stylised "N" mark
+  x.save(); x.translate(cx, cy); x.scale(s, s); x.fillStyle = col;
+  x.beginPath(); x.moveTo(-34, 30); x.lineTo(-34, -30); x.lineTo(-18, -30); x.lineTo(18, 14); x.lineTo(18, -30); x.lineTo(34, -30); x.lineTo(34, 30); x.lineTo(18, 30); x.lineTo(-18, -14); x.lineTo(-18, 30); x.closePath(); x.fill(); x.restore();
+};
+export function nupaBanner(l1, l2, icon, l3 = '') {
+  const [c, x] = mk(256, 768); nBg(x, 256, 768, '#241a66', '#4a2ba8');
+  x.strokeStyle = 'rgba(255,255,255,.35)'; x.lineWidth = 4; x.strokeRect(10, 10, 236, 748);
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.strokeStyle = '#e9e1ff'; x.lineWidth = 6; x.lineJoin = 'round';
+  if (icon === 'crest') { x.fillStyle = '#e9e1ff'; x.beginPath(); x.moveTo(78, 120); x.lineTo(178, 120); x.lineTo(178, 210); x.quadraticCurveTo(178, 262, 128, 286); x.quadraticCurveTo(78, 262, 78, 210); x.closePath(); x.fill(); x.fillStyle = '#4a2ba8'; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if ((i + j) % 2 === 0) x.fillRect(92 + i * 18, 134 + j * 20, 16, 18); }
+  if (icon === 'code') { x.beginPath(); x.moveTo(98, 150); x.lineTo(64, 190); x.lineTo(98, 230); x.moveTo(158, 150); x.lineTo(192, 190); x.lineTo(158, 230); x.moveTo(138, 140); x.lineTo(118, 240); x.stroke(); }
+  if (icon === 'book') { x.beginPath(); x.moveTo(128, 170); x.lineTo(128, 240); x.moveTo(128, 170); x.quadraticCurveTo(100, 150, 66, 158); x.lineTo(66, 228); x.quadraticCurveTo(100, 220, 128, 240); x.quadraticCurveTo(156, 220, 190, 228); x.lineTo(190, 158); x.quadraticCurveTo(156, 150, 128, 170); x.stroke(); }
+  if (icon === 'bulb') { x.beginPath(); x.arc(128, 188, 36, 0, 7); x.stroke(); x.beginPath(); x.moveTo(110, 232); x.lineTo(146, 232); x.moveTo(114, 246); x.lineTo(142, 246); x.stroke(); }
+  const cloud = (cx, cy, sc) => { x.beginPath(); x.arc(cx - 26 * sc, cy + 8 * sc, 22 * sc, Math.PI * 0.5, Math.PI * 1.5); x.arc(cx - 4 * sc, cy - 12 * sc, 28 * sc, Math.PI, Math.PI * 1.9); x.arc(cx + 28 * sc, cy + 8 * sc, 22 * sc, Math.PI * 1.5, Math.PI * 0.5); x.closePath(); };
+  if (icon === 'cloud') { x.fillStyle = '#e9e1ff'; cloud(128, 190, 1.3); x.fill(); x.fillStyle = '#4a2ba8'; x.fillRect(108, 190, 40, 6); x.fillRect(108, 204, 40, 6); }
+  if (icon === 'loop') { x.lineWidth = 9; x.beginPath(); x.moveTo(128, 190); x.bezierCurveTo(150, 140, 205, 140, 205, 190); x.bezierCurveTo(205, 240, 150, 240, 128, 190); x.bezierCurveTo(106, 140, 51, 140, 51, 190); x.bezierCurveTo(51, 240, 106, 240, 128, 190); x.stroke(); }
+  if (icon === 'shield') { x.fillStyle = '#e9e1ff'; x.beginPath(); x.moveTo(128, 138); x.lineTo(184, 158); x.lineTo(184, 205); x.quadraticCurveTo(184, 248, 128, 272); x.quadraticCurveTo(72, 248, 72, 205); x.lineTo(72, 158); x.closePath(); x.fill(); x.strokeStyle = '#4a2ba8'; x.lineWidth = 10; x.beginPath(); x.moveTo(104, 204); x.lineTo(122, 226); x.lineTo(156, 180); x.stroke(); }
+  if (icon === 'cube') { x.lineWidth = 6; x.beginPath(); x.moveTo(128, 130); x.lineTo(180, 158); x.lineTo(180, 218); x.lineTo(128, 246); x.lineTo(76, 218); x.lineTo(76, 158); x.closePath(); x.moveTo(76, 158); x.lineTo(128, 188); x.lineTo(180, 158); x.moveTo(128, 188); x.lineTo(128, 246); x.stroke(); }
+  x.fillStyle = '#fff'; x.font = `700 ${l1.length > 8 ? 30 : 40}px ${FONT}`; x.fillText(l1, 128, 360);
+  x.font = `600 ${l2.length > 10 ? 25 : 30}px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText(l2, 128, 405);
+  x.fillStyle = '#9d7bff'; x.fillRect(70, 440, 116, 3);
+  if (l3) { x.fillStyle = '#fff'; x.font = `500 22px ${FONT}`; x.fillText(l3, 128, 484, 220); }
+  return tex(c, 4);
+}
+export function nupaHeader() {
+  const W = 1400, H = 330, [c, x] = mk(W, H);
+  x.beginPath(); x.moveTo(60, H); x.lineTo(20, 120); x.lineTo(150, 20); x.lineTo(W - 150, 20); x.lineTo(W - 20, 120); x.lineTo(W - 60, H); x.closePath();
+  nBg(x, W, H, '#161a4a', '#2c2478'); x.save(); x.clip(); x.fillStyle = 'rgba(255,255,255,.04)'; for (let i = 0; i < 20; i++) x.fillRect(i * 80, 0, 30, H); x.restore();
+  x.beginPath(); x.moveTo(60, H - 4); x.lineTo(24, 122); x.lineTo(152, 24); x.lineTo(W - 152, 24); x.lineTo(W - 24, 122); x.lineTo(W - 60, H - 4);
+  x.strokeStyle = '#8f7bff'; x.lineWidth = 10; x.shadowColor = '#8f7bff'; x.shadowBlur = 24; x.stroke(); x.shadowBlur = 0;
+  x.textAlign = 'center'; x.fillStyle = '#fff'; x.shadowColor = '#b9a8ff'; x.shadowBlur = 16; x.font = `700 118px ${FONT}`; x.fillText('NupaStack Website', W / 2, 168);
+  x.shadowBlur = 0; x.font = `600 76px ${FONT}`; x.fillStyle = '#e4dcff'; x.fillText('3D Enhancement', W / 2, 262);
+  return tex(c, 4);
+}
+export function nupaLogoWall() {
+  const W = 700, H = 1100, [c, x] = mk(W, H); nBg(x, W, H, '#10163f', '#1d1b5c');
+  x.strokeStyle = 'rgba(143,123,255,.6)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16);
+  nLogo(x, 190, 190, 1.5); x.fillStyle = '#fff'; x.font = `700 92px ${FONT}`; x.textAlign = 'left'; x.fillText('NupaStack', 262, 220);
+  x.font = `500 34px ${FONT}`; x.fillStyle = '#9fd8ff'; x.fillText('Cloud & DevOps, built and run for your team', 40, 340, 620);
+  x.fillStyle = 'rgba(255,255,255,.1)'; for (let i = 0; i < 6; i++) { rr(x, 40, 420 + i * 100, 620 - (i % 3) * 120, 54, 14); x.fill(); }
+  return tex(c, 4);
+}
+export function nupaScreen() {
+  const W = 1280, H = 780, [c, x] = mk(W, H); nBg(x, W, H, '#070d26', '#12194a');
+  x.fillStyle = 'rgba(255,255,255,.06)'; x.fillRect(0, 0, W, 78);
+  nLogo(x, 70, 40, 0.55); x.fillStyle = '#fff'; x.font = `700 32px ${FONT}`; x.textAlign = 'left'; x.fillText('NupaStack', 106, 52);
+  x.font = `500 24px ${FONT}`; x.fillStyle = 'rgba(255,255,255,.8)'; ['Services', 'How We Work', 'Pricing', 'Blog', 'About'].forEach((t, i) => x.fillText(t, 560 + i * 138 - (i > 1 ? 12 : 0), 50));
+  x.fillStyle = '#35c8ff'; x.font = `700 62px ${FONT}`; x.fillStyle = '#fff';
+  ['Enterprise-grade cloud,', 'built and run for', 'your team.'].forEach((t, i) => { x.fillStyle = i === 2 ? '#5fd0ff' : '#fff'; x.fillText(t, 70, 250 + i * 80); });
+  x.fillStyle = 'rgba(255,255,255,.75)'; x.font = `500 28px ${FONT}`; x.fillText('Cloud & DevOps, built and run for your team', 70, 520);
+  x.fillStyle = '#35c8ff'; rr(x, 70, 580, 330, 70, 35); x.fill(); x.fillStyle = '#06122e'; x.font = `700 26px ${FONT}`; x.fillText('Book a Cloud Audit', 104, 625);
+  x.strokeStyle = '#35c8ff'; x.lineWidth = 3; rr(x, 424, 580, 250, 70, 35); x.stroke(); x.fillStyle = '#fff'; x.fillText('How We Work', 462, 625);
+  // globe
+  const gx = 960, gy = 430, R = 210; const g = x.createRadialGradient(gx - 60, gy - 60, 20, gx, gy, R); g.addColorStop(0, '#3a6bff'); g.addColorStop(1, '#0a1440'); x.fillStyle = g; x.beginPath(); x.arc(gx, gy, R, 0, 7); x.fill();
+  const r = rng(5); x.fillStyle = 'rgba(120,220,255,.9)';
+  for (let i = 0; i < 520; i++) { const a = r() * 6.28, b = Math.acos(2 * r() - 1), px = Math.sin(b) * Math.cos(a), py = Math.cos(b), pz = Math.sin(b) * Math.sin(a); if (pz > 0) x.fillRect(gx + px * R * 0.97, gy + py * R * 0.97, 3, 3); }
+  x.strokeStyle = '#35c8ff'; x.lineWidth = 5; x.shadowColor = '#35c8ff'; x.shadowBlur = 18; x.save(); x.translate(gx, gy); x.rotate(-0.35); x.beginPath(); x.ellipse(0, 0, R * 1.35, R * 0.38, 0, 0, 6.3); x.stroke(); x.restore(); x.shadowBlur = 0;
+  return tex(c, 4);
+}
+export function nupaOverview() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); nBg(x, W, H, '#10163f', '#232066');
+  x.strokeStyle = 'rgba(143,123,255,.7)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16);
+  x.fillStyle = '#fff'; x.textAlign = 'left'; x.font = `700 44px ${FONT}`; x.fillText('Project Overview', 44, 90);
+  x.fillStyle = 'rgba(255,255,255,.9)'; x.font = `500 31px ${FONT}`;
+  ['Integrated Three.js into the', 'NupaStack website to create', 'an interactive and modern', '3D experience.'].forEach((t, i) => x.fillText(t, 44, 160 + i * 46));
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('Tech Stack', 44, 420);
+  const icon = (i, fn) => { const X = 44 + i * 150; x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, 450, 120, 120, 22); x.fill(); fn(X + 60, 510); };
+  const lab = (cx, t, c) => { x.fillStyle = c; x.font = `600 21px ${FONT}`; x.textAlign = 'center'; x.fillText(t, cx, 604); x.textAlign = 'left'; };
+  icon(0, (cx, cy) => { x.fillStyle = '#e44d26'; x.beginPath(); x.moveTo(cx - 36, cy - 40); x.lineTo(cx + 36, cy - 40); x.lineTo(cx + 30, cy + 26); x.lineTo(cx, cy + 40); x.lineTo(cx - 30, cy + 26); x.closePath(); x.fill(); x.fillStyle = '#fff'; x.font = `700 30px ${FONT}`; x.textAlign = 'center'; x.fillText('5', cx, cy + 10); x.textAlign = 'left'; lab(cx, 'HTML5', '#ffb199'); });
+  icon(1, (cx, cy) => { x.fillStyle = '#2965f1'; x.beginPath(); x.moveTo(cx - 36, cy - 40); x.lineTo(cx + 36, cy - 40); x.lineTo(cx + 30, cy + 26); x.lineTo(cx, cy + 40); x.lineTo(cx - 30, cy + 26); x.closePath(); x.fill(); x.fillStyle = '#fff'; x.font = `700 30px ${FONT}`; x.textAlign = 'center'; x.fillText('3', cx, cy + 10); x.textAlign = 'left'; lab(cx, 'CSS3', '#a9c2ff'); });
+  icon(2, (cx, cy) => { x.fillStyle = '#f7df1e'; x.fillRect(cx - 38, cy - 38, 76, 76); x.fillStyle = '#222'; x.font = `700 38px ${FONT}`; x.textAlign = 'center'; x.fillText('JS', cx + 8, cy + 28); x.textAlign = 'left'; lab(cx, 'JavaScript', '#fff3a0'); });
+  icon(3, (cx, cy) => { x.strokeStyle = '#fff'; x.lineWidth = 5; x.beginPath(); x.moveTo(cx - 30, cy + 34); x.lineTo(cx + 6, cy - 40); x.lineTo(cx + 36, cy + 34); x.closePath(); x.moveTo(cx - 12, cy + 4); x.lineTo(cx + 16, cy + 4); x.lineTo(cx, cy - 22); x.closePath(); x.stroke(); lab(cx, 'Three.js', '#fff'); });
+  x.fillStyle = 'rgba(255,255,255,.75)'; x.font = `500 24px ${FONT}`; x.fillText('+ WebGL · GLB · Blender · Node · Netlify', 44, 650);
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('My Contributions', 44, 730);
+  x.font = `500 31px ${FONT}`;
+  ['Built 3D hero scenes in Three.js', 'Blender → GLB hero model', 'Lazy-load + static fallbacks', 'Reusable 3D components', 'Automated Puppeteer tests'].forEach((t, i) => { const Y = 800 + i * 72; x.fillStyle = '#3b82f6'; rr(x, 44, Y - 30, 40, 40, 8); x.fill(); x.strokeStyle = '#fff'; x.lineWidth = 5; x.beginPath(); x.moveTo(52, Y - 10); x.lineTo(62, Y); x.lineTo(78, Y - 22); x.stroke(); x.fillStyle = '#fff'; x.fillText(t, 104, Y + 4, 580); });
+  return tex(c, 4);
+}
+export function nupaKiosk() {
+  const W = 700, H = 420, [c, x] = mk(W, H); nBg(x, W, H, '#17194a', '#2a2478');
+  x.strokeStyle = '#8f7bff'; x.lineWidth = 10; x.shadowColor = '#8f7bff'; x.shadowBlur = 20; x.strokeRect(8, 8, W - 16, H - 16); x.shadowBlur = 0;
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.font = `700 52px ${FONT}`; x.fillText('View Project Details', W / 2, 250); x.fillStyle = '#7cd6ff'; x.fillText('→', W / 2, 330);
+  x.strokeStyle = '#7cd6ff'; x.lineWidth = 7; x.lineCap = 'round'; x.beginPath(); x.arc(W / 2 - 6, 110, 30, 0, 6.3); x.moveTo(W / 2 - 6, 80); x.lineTo(W / 2 - 6, 150); x.stroke();
+  return tex(c, 4);
+}
+
+export function nupaPanel(kind) {
+  const W = 640, H = 900, [c, x] = mk(W, H); nBg(x, W, H, '#10163f', '#232066');
+  x.strokeStyle = 'rgba(143,123,255,.7)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  const title = (t, y = 84) => { x.fillStyle = '#fff'; x.font = `700 46px ${FONT}`; x.fillText(t, 40, y); x.fillStyle = '#9d7bff'; x.fillRect(40, y + 16, 90, 5); };
+  if (kind === 'stack') {
+    title('Tech Stack');
+    [['Front end', 'HTML5 · CSS3 · JavaScript (ES Modules)'], ['3D / graphics', 'Three.js r160 · WebGL · GLTFLoader · RoomEnvironment'], ['3D modelling', 'Blender · Python (bpy) → optimised GLB'], ['Testing', 'Node.js · Puppeteer · Playwright'], ['Deploy', 'Netlify · _headers · redirects · sitemap']].forEach(([h, t], i) => {
+      const Y = 170 + i * 135; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 36, Y - 40, W - 72, 112, 18); x.fill();
+      x.fillStyle = '#7cd6ff'; x.font = `700 26px ${FONT}`; x.fillText(h, 58, Y); x.fillStyle = '#fff'; x.font = `500 24px ${FONT}`; x.fillText(t, 58, Y + 44, W - 110);
+    });
+    x.fillStyle = '#ffd47a'; x.font = `600 26px ${FONT}`; x.fillText('No framework – fast by design', 40, 860);
+  } else {
+    title('3D Highlights');
+    [['6+', '3D hero scenes'], ['GLB', 'Blender-modelled hero'], ['Lazy', 'start + WebP fallback'], ['r160', 'Three.js, served locally']].forEach(([n, t], i) => {
+      const X = 40 + (i % 2) * 290, Y = 150 + Math.floor(i / 2) * 250; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, X, Y, 270, 220, 22); x.fill();
+      x.fillStyle = '#a890ff'; x.font = `700 78px ${FONT}`; x.fillText(n, X + 26, Y + 100); x.fillStyle = '#fff'; x.font = `500 26px ${FONT}`; x.fillText(t, X + 26, Y + 156, 230);
+    });
+    x.fillStyle = '#fff'; x.font = `700 34px ${FONT}`; x.fillText('Site pages', 40, 700);
+    x.fillStyle = 'rgba(255,255,255,.85)'; x.font = `500 25px ${FONT}`; ['Home · About · How We Work', 'Cloud Audit · DevOps Retainer', 'Implementation · Blog · Contact'].forEach((t, i) => x.fillText(t, 40, 750 + i * 42));
+  }
   return tex(c, 4);
 }
