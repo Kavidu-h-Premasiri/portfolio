@@ -563,7 +563,79 @@ export function buildLab({ mobile = false, theme = 'lab' } = {}) {
     return { key: 'poker', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
   };
 
-  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkPoker()] : [mkPreschool(), mkAvurudu(), mkPortfolio(), mkTaskflow(), mkPoker()];
+  // ═════════ FoodWeb (My Projects Lab + SLIIT) ═════════
+  const mkFood = () => {
+    const { B, k, g } = mk(), picks = [], Y = 1.1;
+    const edge = (x, y, z, w, h, c = 0xa56bff) => { k.box('glow', c, x, y + h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x, y - h / 2, z, w + 0.2, 0.08, 0.1); k.box('glow', c, x - w / 2, y, z, 0.08, h, 0.1); k.box('glow', c, x + w / 2, y, z, 0.08, h, 0.1); };
+    // podium
+    k.cyl('lit', 0x1a1640, 0, 0.5, 0, 8.4, 1.0, 1, 0.8); k.cyl('lit', 0x2c2a62, 0, Y - 0.04, 0, 8.0, 0.1, 1, 0.8);
+    for (const [r, y, c] of [[8.4, 0.95, 0xa56bff], [8.4, 0.3, 0x48b8ff], [9.0, 0.1, 0xffb348]]) B.add('glow', new THREE.TorusGeometry(r, 0.09, 6, 90).rotateX(Math.PI / 2), c, { x: 0, y, z: 0, sz: 0.8 });
+    // back wall: info panel, kanban screen, tech-stack panel, header
+    k.box('lit', 0x1c1b4a, -6.4, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.fwInfo(), 3.9, 6.4, -6.4, Y + 3.7, -2.28, 0, { transparent: false })); edge(-6.4, Y + 3.7, -2.22, 3.9, 6.4);
+    k.box('lit', 0x161b4a, 0.5, Y + 4.1, -3.3, 8.6, 6.9, 0.6); g.add(plane(L.fwScreen(), 7.6, 4.275, 0.5, Y + 4.2, -2.98, 0, { transparent: false })); edge(0.5, Y + 4.2, -2.94, 7.6, 4.275, 0x6fb0ff);
+    k.box('lit', 0x1c1b4a, 7.0, Y + 3.7, -2.7, 4.5, 7.4, 0.8); g.add(plane(L.fwStack(), 3.9, 6.4, 7.0, Y + 3.7, -2.28, 0, { transparent: false })); edge(7.0, Y + 3.7, -2.22, 3.9, 6.4);
+    g.add(plane(L.fwHeader(), 9.6, 2.26, 0.5, Y + 8.6, -3.1)); k.box('glow', 0xc9a8ff, 0.5, Y + 7.5, -3.0, 6.6, 0.07, 0.07);
+    // miniature food stall - rotatable (drag it, or let it turn slowly)
+    const ix = -0.4, iy = Y + 0.04, iz = 2.4;
+    const isl = new THREE.Group(); isl.position.set(ix, iy, iz); isl.userData.anim = { type: 'bld' };
+    { const Bi = new Batch(), ki = kit(Bi, rand);
+      ki.cyl('lit', 0x3a2a6a, 0, 0.3, 0, 4.1, 0.6); ki.cyl('lit', 0x4f9a3e, 0, 0.66, 0, 3.95, 0.14); ki.tor('glow', 0xff9a3c, 4.1, 0.07, 0, 0.3, 0);
+      // stall: walls, glowing windows, roof, striped awning, neon sign
+      ki.box('lit', 0x8a4a2a, 0, 1.9, -1.6, 4.6, 2.5, 1.5); ki.box('lit', 0x5a2a1a, 0, 3.2, -1.6, 4.9, 0.2, 1.8);
+      for (const wx of [-1.4, 0, 1.4]) { ki.box('glow', 0xffc66a, wx, 2.1, -0.83, 1.0, 0.9, 0.04); }
+      for (let i = 0; i < 8; i++) ki.box('lit', i % 2 ? 0xffffff : 0xe8412c, -2.1 + i * 0.6, 3.0, -0.55, 0.6, 0.1, 1.5, 0, 0.4);
+      ki.box('glow', 0xff9a3c, 0, 3.6, -1.6, 2.6, 0.45, 0.1); ki.box('glow', 0xfff1d8, 0, 3.6, -1.53, 2.2, 0.18, 0.04);
+      // counter + display on top
+      ki.box('lit', 0x5a2a6a, 0, 1.0, 0.7, 4.4, 0.8, 1.0); ki.box('lit', 0xc9a05a, 0, 1.45, 0.7, 4.6, 0.1, 1.2); ki.box('glow', 0xff9a3c, 0, 1.2, 1.22, 4.4, 0.05, 0.04);
+      ki.box('lit', 0xc4c8d4, -0.3, 1.55, 0.5, 1.3, 0.05, 0.8); ki.box('lit', 0x14103a, -0.3, 2.1, 0.15, 1.3, 0.9, 0.05, 0, -0.2); ki.box('glow', 0xff8a4a, -0.3, 2.1, 0.19, 1.15, 0.75, 0.02, 0, -0.2);
+      // burger
+      ki.cyl('lit', 0xf0a83a, -1.7, 1.55, 0.7, 0.4, 0.14); ki.cyl('lit', 0x7cc24a, -1.7, 1.66, 0.7, 0.42, 0.05); ki.cyl('lit', 0x6a3a1a, -1.7, 1.74, 0.7, 0.4, 0.12); ki.cyl('lit', 0xffd23a, -1.7, 1.82, 0.7, 0.42, 0.04); ki.ico('lit', 0xf0a83a, -1.7, 1.92, 0.7, 0.4, 0.55);
+      // pizza + chicken plate + rice plate
+      ki.cyl('lit', 0xffb23a, 1.2, 1.55, 0.9, 0.5, 0.06); for (let i = 0; i < 5; i++) ki.cyl('lit', 0xd0342c, 1.2 + Math.cos(i * 1.26) * 0.25, 1.6, 0.9 + Math.sin(i * 1.26) * 0.25, 0.07, 0.03);
+      ki.cyl('lit', 0xffffff, 1.9, 1.52, 0.45, 0.35, 0.06); for (let i = 0; i < 3; i++) ki.ico('lit', 0xc97a2a, 1.8 + i * 0.12, 1.66, 0.45, 0.16, 0.7);
+      ki.cyl('lit', 0xffffff, 0.5, 1.52, 1.05, 0.35, 0.06); ki.ico('lit', 0xffffff, 0.5, 1.7, 1.05, 0.28, 0.7);
+      // fries + drink
+      ki.box('lit', 0xe8412c, 2.1, 1.65, 0.95, 0.4, 0.4, 0.3); for (let i = 0; i < 5; i++) ki.box('lit', 0xffd23a, 1.97 + i * 0.07, 1.98, 0.95, 0.05, 0.3, 0.05);
+      ki.cyl('lit', 0xe8412c, -1.0, 1.75, 1.0, 0.2, 0.55); ki.cyl('lit', 0xffffff, -1.0, 2.1, 1.0, 0.04, 0.35);
+      // delivery scooter
+      ki.box('lit', 0xe8412c, 2.1, 1.05, 2.4, 0.5, 0.45, 1.5); ki.ico('lit', 0x22262e, 2.1, 0.85, 3.05, 0.3, 1.0, 0.45); ki.ico('lit', 0x22262e, 2.1, 0.85, 1.75, 0.3, 1.0, 0.45);
+      ki.box('lit', 0xff8a3c, 2.1, 1.55, 1.9, 0.65, 0.6, 0.65); ki.box('lit', 0xe8412c, 2.1, 1.5, 2.9, 0.1, 0.5, 0.1); ki.box('glow', 0xfff1a0, 2.1, 1.35, 3.15, 0.2, 0.15, 0.05);
+      // plants
+      for (const [px, pz] of [[-3.3, -0.2], [3.4, -0.4], [-3.0, 1.8]]) { ki.cyl('lit', 0xe8e0d6, px, 0.9, pz, 0.3, 0.4); for (let i = 0; i < 5; i++) { const a = i * 1.26; ki.cone('lit', 0x3fcf6a, px + Math.cos(a) * 0.1, 1.5, pz + Math.sin(a) * 0.1, 0.13, 0.9 + (i % 2) * 0.3, Math.cos(a) * 0.4, -Math.sin(a) * 0.4); } }
+      isl.add(Bi.build('lit', lit()), Bi.build('glow', glow())); }
+    g.add(isl);
+    const kpS = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xff9a3c, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false })); kpS.scale.set(3.4, 3.4, 1); kpS.position.set(ix, iy + 2.4, iz + 0.6); g.add(kpS);
+    const ihit = new THREE.Mesh(new THREE.CylinderGeometry(4.1, 4.1, 4.2, 18), new THREE.MeshBasicMaterial()); ihit.visible = false; ihit.position.set(ix, iy + 1.9, iz); ihit.userData.kind = 'bld'; g.add(ihit); picks.push(ihit);
+    // name plate on the podium front
+    g.add(plane(L.fwPlate(), 4.6, 1.12, ix, Y + 0.45, 7.55, 0)); edge(ix, Y + 0.45, 7.58, 4.6, 1.12);
+    // floating food: burger, cup, fries and a chalkboard sign
+    const anim = (o, a) => { o.userData.anim = a; return o; };
+    const bm = (c) => new THREE.MeshBasicMaterial({ color: c, toneMapped: false });
+    { const burger = new THREE.Group(); const part = (geo, c, y) => { const m = new THREE.Mesh(geo, bm(c)); m.position.y = y; burger.add(m); };
+      part(new THREE.SphereGeometry(0.7, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), 0xf0a83a, 0.25); part(new THREE.CylinderGeometry(0.72, 0.72, 0.1, 16), 0x7cc24a, 0.2); part(new THREE.CylinderGeometry(0.66, 0.66, 0.22, 16), 0x6a3a1a, 0.05); part(new THREE.CylinderGeometry(0.7, 0.7, 0.08, 16), 0xffd23a, -0.1); part(new THREE.CylinderGeometry(0.66, 0.6, 0.18, 16), 0xf0a83a, -0.25);
+      burger.position.set(-12.6, Y + 7.6, 1.8); burger.userData.y0 = burger.position.y; anim(burger, { type: 'spin', sp: 0.5, bob: 0.3, ph: 0 }); g.add(burger);
+      const cup = new THREE.Group(); const cb = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.42, 1.3, 14), bm(0xe8412c)); cup.add(cb); const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.12, 14), bm(0xffffff)); lid.position.y = 0.7; cup.add(lid); const st = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.8, 6), bm(0xffffff)); st.position.set(0.1, 1.1, 0); st.rotation.z = -0.2; cup.add(st);
+      cup.position.set(13.4, Y + 7.2, 1.8); cup.userData.y0 = cup.position.y; anim(cup, { type: 'spin', sp: 0.6, bob: 0.3, ph: 1 }); g.add(cup);
+      const fr = new THREE.Group(); const fb = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.8, 0.5), bm(0xe8412c)); fr.add(fb); for (let i = 0; i < 6; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.7, 0.1), bm(0xffd23a)); f.position.set(-0.35 + i * 0.14, 0.7 + (i % 2) * 0.1, 0); fr.add(f); }
+      fr.position.set(-13.8, Y + 4.6, 1.8); fr.userData.y0 = fr.position.y; anim(fr, { type: 'spin', sp: 0.7, bob: 0.3, ph: 2 }); g.add(fr);
+      const pz = new THREE.Group(); const sl = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.4, 3).rotateX(Math.PI / 2).scale(1, 1, 0.12), bm(0xffb23a)); pz.add(sl); const pp = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.05, 8).rotateX(Math.PI / 2), bm(0xd0342c)); pp.position.set(0, 0, 0.1); pz.add(pp);
+      pz.position.set(13.8, Y + 4.4, 1.8); pz.userData.y0 = pz.position.y; anim(pz, { type: 'spin', sp: 0.5, bob: 0.3, ph: 3 }); g.add(pz); }
+    // chalkboard sign on the podium
+    g.add(plane(L.fwChalk(), 1.8, 2.52, -6.4, Y + 1.5, 4.0, 0.45, { transparent: false })); k.box('lit', 0x6a4a2c, -6.9, Y + 0.7, 4.0, 0.12, 1.5, 0.12, 0.45, 0, 0.18); k.box('lit', 0x6a4a2c, -5.9, Y + 0.7, 4.0, 0.12, 1.5, 0.12, 0.45, 0, -0.18);
+    for (const [fx, fz] of [[-9.6, 5.2], [12.0, 4.6], [6.0, 8.2]]) { k.cyl('lit', 0x2c2a62, fx, Y + 0.3, fz, 0.5, 0.6); for (let i = 0; i < 6; i++) { const a = i * 1.05; k.cone('lit', 0x3fcf9a, fx + Math.cos(a) * 0.18, Y + 0.95, fz + Math.sin(a) * 0.18, 0.14, 0.9 + (i % 3) * 0.2, Math.cos(a) * 0.35, -Math.sin(a) * 0.35); } }
+    // banners + chandelier + cove (lab colours)
+    for (const [x, t] of [[-14.2, 0.18], [-11.6, 0.18], [11.6, -0.18], [14.2, -0.18]]) g.add(plane(TH.banner, 2.4, 7.2, x, 8.6, -5.5, t));
+    k.tor('glow', 0xffffff, 6.2, 0.18, 0, 11.6, -1); k.tor('glow', 0xc9a8ff, 5.0, 0.1, 0, 11.0, -1);
+    for (const [w, d, x, z] of [[32, 0.14, 0, -12], [32, 0.14, 0, 8], [0.14, 20, -16, -2], [0.14, 20, 16, -2]]) k.box('glow', TH.cove, x, 12.9, z, w, 0.14, d);
+    const dk = desk(g, k, { x: 9.6, z: 6.4, ry: -0.5, title: 'FoodWeb', accent: '#ffa04a', accentHex: 0xff9a3c }); picks.push(dk.hit);
+    g.add(B.build('lit', lit()), B.build('glow', glow()));
+    const hover = hoverRing(8.4, 0.95, 0xb9a4ff); hover.scale.z = 0.8; g.add(hover);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(8.4, 8.4, 9, 14).scale(1, 1, 0.8), new THREE.MeshBasicMaterial()); hit.visible = false; hit.position.y = 5; hit.userData.kind = 'model'; g.add(hit); picks.push(hit);
+    const grp = mirrored(g), anims = []; grp.traverse((o) => { if (o.userData.anim) anims.push(o); });
+    return { key: 'food', group: grp, picks, hover, desk: dk, cam: { x: 0, y: 5.0, d: 27 }, anims };
+  };
+
+  const rooms = theme === 'nupa' ? [mkNupa()] : theme === 'sliit' ? [mkPreschool(), mkPoker(), mkFood()] : [mkPreschool(), mkAvurudu(), mkPortfolio(), mkTaskflow(), mkPoker(), mkFood()];
   rooms.forEach((r) => { r.group.visible = false; scene.add(r.group); });
   let cur = 0, from = -1, tr = 1, dir = 1, bldAng = 0.5, bldDrag = -1e9;
   rooms[0].group.visible = true;

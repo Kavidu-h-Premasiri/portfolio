@@ -755,3 +755,75 @@ export function pkPlate() {
   pkFish(x, 110, 112, 1.5); x.fillStyle = '#ffd27a'; x.textAlign = 'left'; x.font = `700 62px ${FONT}`; x.fillText('Fish and Chips Poker', 215, 112, 650); x.font = `500 40px ${FONT}`; x.fillStyle = '#d9ccff'; x.fillText('Reef Royale Edition', 217, 172, 640);
   return tex(c, 4);
 }
+
+// ───────── FoodWeb (My Projects Lab + SLIIT) ─────────
+const fwFork = (x, cx, cy, s, col = '#ffe3b0') => { // fork + knife mark on a rounded tile
+  x.save(); x.translate(cx, cy); x.scale(s, s);
+  const g = x.createLinearGradient(-45, -45, 45, 45); g.addColorStop(0, '#ff6a3a'); g.addColorStop(1, '#ff3a6a'); x.fillStyle = g; rr(x, -45, -45, 90, 90, 24); x.fill();
+  x.strokeStyle = col; x.fillStyle = col; x.lineWidth = 7; x.lineCap = 'round'; x.lineJoin = 'round';
+  x.beginPath(); x.moveTo(-17, -30); x.lineTo(-17, -6); x.moveTo(-8, -30); x.lineTo(-8, -6); x.moveTo(-26, -30); x.lineTo(-26, -6); x.moveTo(-26, -6); x.quadraticCurveTo(-17, 6, -8, -6); x.moveTo(-17, 2); x.lineTo(-17, 32); x.stroke();
+  x.beginPath(); x.moveTo(16, 32); x.lineTo(16, -30); x.quadraticCurveTo(32, -22, 28, 4); x.lineTo(16, 4); x.stroke(); x.restore();
+};
+export function fwHeader() {
+  const W = 1400, H = 330, [c, x] = mk(W, H);
+  x.beginPath(); x.moveTo(60, H); x.lineTo(20, 120); x.lineTo(150, 20); x.lineTo(W - 150, 20); x.lineTo(W - 20, 120); x.lineTo(W - 60, H); x.closePath();
+  pBg(x, W, H); x.save(); x.clip(); x.fillStyle = 'rgba(255,255,255,.04)'; for (let i = 0; i < 20; i++) x.fillRect(i * 80, 0, 30, H); x.restore();
+  x.beginPath(); x.moveTo(60, H - 4); x.lineTo(24, 122); x.lineTo(152, 24); x.lineTo(W - 152, 24); x.lineTo(W - 24, 122); x.lineTo(W - 60, H - 4);
+  x.strokeStyle = '#ff9a3c'; x.lineWidth = 10; x.shadowColor = '#ff7a2a'; x.shadowBlur = 24; x.stroke(); x.shadowBlur = 0;
+  fwFork(x, 230, 165, 2.3);
+  x.textAlign = 'left'; x.shadowColor = '#ffb040'; x.shadowBlur = 14; x.font = `700 130px ${FONT}`; x.fillStyle = '#fff'; x.fillText('Food', 370, 190); const fw = x.measureText('Food').width; x.fillStyle = '#ffb23a'; x.fillText('Web', 370 + fw, 190);
+  x.shadowBlur = 0; x.font = `600 46px ${FONT}`; x.fillStyle = '#ffe3c0'; x.fillText('Food Ordering System', 374, 256, 700);
+  x.fillStyle = '#ff6a3a'; rr(x, 1130, 120, 190, 80, 22); x.fill(); x.fillStyle = '#fff'; x.textAlign = 'center'; x.font = `700 52px ${FONT}`; x.fillText('2025', 1225, 177);
+  return tex(c, 4);
+}
+export function fwScreen() {
+  const W = 1280, H = 720, [c, x] = mk(W, H);
+  x.fillStyle = '#fff6ec'; x.fillRect(0, 0, W, H);
+  // navbar (matches the real site: brand, Home, Foods, Contact, cart)
+  x.fillStyle = '#ffffff'; x.fillRect(0, 0, W, 84); x.fillStyle = '#e8dccd'; x.fillRect(0, 84, W, 3);
+  fwFork(x, 62, 42, 0.42); x.textAlign = 'left'; x.fillStyle = '#3a2418'; x.font = `700 34px ${FONT}`; x.fillText('KaviFood', 100, 54);
+  x.font = `500 26px ${FONT}`; x.fillStyle = '#5a4a40'; x.fillText('Home', 380, 54); x.fillText('Foods ▾', 480, 54); x.fillText('Contact', 620, 54); x.fillText('Cart', 1120, 54);
+  // hero
+  const hg = x.createLinearGradient(0, 87, W, 340); hg.addColorStop(0, '#5a2a14'); hg.addColorStop(1, '#c2531c'); x.fillStyle = hg; x.fillRect(0, 87, W, 270);
+  x.fillStyle = '#fff'; x.font = `700 56px ${FONT}`; x.fillText('Delicious Food, Delivered Fresh', 70, 200); x.font = `500 30px ${FONT}`; x.fillStyle = '#ffe3c0'; x.fillText('Order your favorite meals anytime, anywhere', 70, 258);
+  x.fillStyle = '#ffb23a'; x.beginPath(); x.arc(1020, 232, 110, 0, 7); x.fill(); x.fillStyle = '#7a3a1a'; x.beginPath(); x.ellipse(1020, 232, 96, 36, 0, 0, 7); x.fill(); x.fillStyle = '#e8412c'; x.beginPath(); x.ellipse(1020, 205, 90, 14, 0, 0, 7); x.fill(); x.fillStyle = '#ffd23a'; x.beginPath(); x.ellipse(1020, 262, 92, 12, 0, 0, 7); x.fill(); x.fillStyle = '#ffb23a'; x.beginPath(); x.ellipse(1020, 160, 98, 52, 0, Math.PI, 0); x.fill();
+  // categories
+  x.fillStyle = '#3a2418'; x.font = `700 36px ${FONT}`; x.textAlign = 'center'; x.fillText('Food Categories', W / 2, 410);
+  ['Fast Food', 'Chicken & Meat', 'Rice & Meals'].forEach((t, i) => { const X = 130 + i * 370; x.fillStyle = '#fff'; x.shadowColor = 'rgba(0,0,0,.18)'; x.shadowBlur = 14; rr(x, X, 440, 330, 100, 18); x.fill(); x.shadowBlur = 0; x.fillStyle = '#c2531c'; x.font = `700 32px ${FONT}`; x.fillText(t, X + 165, 502); });
+  x.fillStyle = '#3a2418'; x.font = `700 36px ${FONT}`; x.fillText('Favorite foods', W / 2, 600);
+  for (let i = 0; i < 4; i++) { const X = 110 + i * 275; x.fillStyle = '#fff'; x.shadowColor = 'rgba(0,0,0,.15)'; x.shadowBlur = 10; rr(x, X, 625, 240, 110, 16); x.fill(); x.shadowBlur = 0; x.fillStyle = ['#ffb23a', '#e8412c', '#7cc24a', '#ffd23a'][i]; x.beginPath(); x.arc(X + 56, 680, 34, 0, 7); x.fill(); x.fillStyle = '#d9cdbf'; rr(x, X + 108, 660, 110, 14, 7); x.fill(); rr(x, X + 108, 686, 70, 12, 6); x.fill(); }
+  return tex(c, 4);
+}
+export function fwInfo() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(255,154,60,.85)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  fwFork(x, 88, 92, 0.95); x.fillStyle = '#fff'; x.font = `700 54px ${FONT}`; x.fillText('FoodWeb', 160, 90); x.font = `500 28px ${FONT}`; x.fillStyle = '#ffe3c0'; x.fillText('Food Ordering System', 162, 135);
+  x.fillStyle = 'rgba(255,255,255,.92)'; x.font = `500 26px ${FONT}`;
+  ['A full-stack MERN food ordering web', 'app where customers can sign up,', 'browse menu categories, add items', 'to a cart and place orders, with a', 'secure admin panel to manage foods', 'and view orders.'].forEach((t, i) => x.fillText(t, 44, 235 + i * 38));
+  x.fillStyle = '#fff'; x.font = `700 40px ${FONT}`; x.fillText('Key Features', 44, 520);
+  ['Customer Sign Up & Login', 'Browse Food Categories', 'Cart & Checkout', 'Admin Menu Management', 'View Customer Orders', 'Contact Page'].forEach((t, i) => { const Y = 590 + i * 92; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 34, Y - 44, W - 68, 74, 20); x.fill(); tfCheck(x, 56, Y + 2, '#ff8a3c'); x.fillStyle = '#fff'; x.font = `600 30px ${FONT}`; x.fillText(t, 116, Y + 2, 540); });
+  return tex(c, 4);
+}
+export function fwStack() {
+  const W = 720, H = 1180, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = 'rgba(255,154,60,.85)'; x.lineWidth = 6; x.strokeRect(8, 8, W - 16, H - 16); x.textAlign = 'left';
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Tech Stack', 44, 84);
+  [['React', '#61dafb'], ['Vite', '#b57cff'], ['Node.js', '#6cc24a'], ['Express', '#d9ccff'], ['MongoDB', '#47c46a'], ['Mongoose', '#ff6a5c'], ['JWT', '#ff4fa3'], ['bcrypt', '#ffd23a'], ['Bootstrap', '#a56bff']].forEach(([t, col], i) => { const X = 44 + (i % 2) * 320, Y = 115 + Math.floor(i / 2) * 78; if (i === 8) { x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, Y, 300, 62, 31); x.fill(); } else { x.fillStyle = 'rgba(255,255,255,.1)'; rr(x, X, Y, 300, 62, 31); x.fill(); } x.fillStyle = col; x.beginPath(); x.arc(X + 32, Y + 31, 11, 0, 7); x.fill(); x.fillStyle = '#fff'; x.font = `600 25px ${FONT}`; x.fillText(t, X + 56, Y + 40, 235); });
+  x.fillStyle = '#fff'; x.font = `700 44px ${FONT}`; x.fillText('Project Highlights', 44, 520);
+  ['Secure Authentication (JWT + bcrypt)', 'Rate-limited Login', 'Input Validation', 'Server-calculated Order Totals', 'REST API (Express + Mongoose)', 'Admin-only Menu & Orders Routes'].forEach((t, i) => { const Y = 590 + i * 92; x.fillStyle = 'rgba(255,255,255,.08)'; rr(x, 34, Y - 44, W - 68, 74, 20); x.fill(); tfCheck(x, 56, Y + 2, '#ff8a3c'); x.fillStyle = '#fff'; x.font = `600 27px ${FONT}`; x.fillText(t, 116, Y + 2, 570); });
+  return tex(c, 4);
+}
+export function fwPlate() {
+  const W = 900, H = 220, [c, x] = mk(W, H); pBg(x, W, H);
+  x.strokeStyle = '#ff9a3c'; x.lineWidth = 10; x.shadowColor = '#ff7a2a'; x.shadowBlur = 18; x.strokeRect(10, 10, W - 20, H - 20); x.shadowBlur = 0;
+  fwFork(x, 118, 110, 1.5); x.textAlign = 'left'; x.font = `700 76px ${FONT}`; x.fillStyle = '#fff'; x.fillText('Food', 215, 118); const fw = x.measureText('Food').width; x.fillStyle = '#ffb23a'; x.fillText('Web', 215 + fw, 118);
+  x.font = `500 40px ${FONT}`; x.fillStyle = '#ffe3c0'; x.fillText('Food Ordering System', 217, 176, 640);
+  return tex(c, 4);
+}
+export function fwChalk() {
+  const W = 400, H = 560, [c, x] = mk(W, H);
+  x.fillStyle = '#c9a05a'; rr(x, 0, 0, W, H, 20); x.fill(); x.fillStyle = '#22262e'; rr(x, 22, 22, W - 44, H - 44, 12); x.fill();
+  x.fillStyle = '#fff'; x.textAlign = 'center'; x.font = `700 74px ${FONT}`; ['Order', 'Food', 'Online'].forEach((t, i) => x.fillText(t, W / 2, 210 + i * 100, 330));
+  x.strokeStyle = '#fff'; x.lineWidth = 6; x.lineCap = 'round'; x.beginPath(); x.arc(W / 2, 110, 36, Math.PI, 0); x.moveTo(W / 2 - 52, 112); x.lineTo(W / 2 + 52, 112); x.stroke();
+  return tex(c, 4);
+}

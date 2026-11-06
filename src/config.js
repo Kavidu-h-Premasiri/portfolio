@@ -151,6 +151,21 @@ export const CONFIG = {
           stack: ['Three.js r160', 'JavaScript (ES Modules)', 'WebGL', 'Tailwind CSS', 'HTML5 Canvas', 'esbuild'],
         },
         {
+          title: 'FoodWeb – Full-Stack Food Ordering System',
+          room: 'food',
+          year: '2025',
+          bullets: [
+            'MERN food ordering web app where customers sign up, browse the Fast Food, Chicken & Meat and Rice & Meals menus, fill a cart and place orders that are saved in MongoDB.',
+            'Admin panel to add, edit and delete foods in every category and to view all customer orders, protected by server-checked admin tokens.',
+            'Secure backend: bcrypt-hashed passwords, JWT sessions, rate-limited login, input validation and server-calculated order totals.',
+          ],
+          details: [
+            { heading: 'Key features', items: ['Customer sign up and login with protected pages', 'Home favourites plus Fast Food, Chicken & Meat and Rice & Meals categories with images, descriptions and prices (Rs.)', 'Cart with quantities and one-click checkout', 'Admin menu management and orders list', 'Contact page'] },
+            { heading: 'How it is built', text: 'React 19 + Vite + React Router + React Bootstrap on the client, and a Node.js / Express 5 REST API with Mongoose on MongoDB. Secrets and admin credentials live in environment variables, and the client talks to the API through one shared axios instance.' },
+          ],
+          stack: ['React', 'Vite', 'Node.js', 'Express', 'MongoDB', 'Mongoose', 'JWT', 'bcrypt', 'Bootstrap'],
+        },
+        {
           title: 'Poker Game Website – Fish & Chips Poker (Reef Royale)',
           room: 'poker',
           year: '2026',
