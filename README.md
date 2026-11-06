@@ -15,8 +15,7 @@ After editing run:  `npm install` (once) then `npm run build`
 - `index.html`        – page + Tailwind-styled UI (nav, panel, loader)
 - `src/world.js`      – the whole 3D scene (island, buildings, plaza, hologram, bridge, water, sky)
 - `src/textures.js`   – signs, facades, paving etc. painted on canvas (no image files to download)
-- `src/entry.js`      – start-up: checks WebGL and picks the 3D island or the 2D version
-- `src/lite.js`       – the simple 2D version (same content, no WebGL needed)
+- `src/entry.js`      – start-up: checks WebGL; shows a short notice with the island picture if 3D can't run
 - `src/main.js`       – renderer, camera, picking, UI wiring, adaptive quality, enter/exit of the Projects Lab
 - `src/lab.js`        – the Projects Lab interior (hall, reflective floor, all project showrooms: Preschool, Avurudu, Portfolio, TaskFlow, Poker, FoodWeb)
 - `src/labtextures.js` – screens, signs, sunset windows and Avurudu hologram panels painted on canvas
@@ -73,4 +72,8 @@ The KP logo (`assets/logo.png`) is used on the loading screen, the top-left home
   - Reset: the ⟲ button or `0`. The on-screen `+` `−` ⟲ buttons work everywhere.
 - **Phones:** rooms are framed closer so the panels are readable, and a swipe slides across the room. Tapping a model opens a small sheet with "Open website" and "Read details", so nobody leaves the page by accident. The info panel is a bottom sheet you can drag down to close. The details reader fills the screen.
 - **Layout:** respects notches and the home bar (safe areas), hides helper text on short landscape screens, and turns animations down when "reduce motion" is set.
-- **2D version (`?lite=1`):** the same content as a normal scrolling page, with the rooms' screens as project thumbnails. It opens automatically when the device has no WebGL, when the 3D scene fails to start, or when the graphics chip resets. Visitors can also choose it with the **2D** button, from a link on the loading screen when loading is slow, or from a prompt when the 3D view runs too slowly. **View in 3D** switches back. The choice is remembered on that device.
+- **No WebGL:** if the device can't run 3D (or the GPU resets), a short notice with the island picture and the contact links is shown instead of a blank screen. The loading screen has no extra options.
+
+## About panel
+Click **About** (or the KP globe) for a profile card: photo (ssets/profile.jpg), role, degree / year / location, intro quote and skill groups with icons. Everything comes from places.about in src/config.js (profile, 	ext, groups). Replace ssets/profile.jpg with your own original photo for a sharper picture.
+

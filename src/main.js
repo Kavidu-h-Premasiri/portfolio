@@ -11,11 +11,11 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FOV = 50, LENS = 1.2;
 
 // ───────── renderer ─────────
-// if this throws (no usable WebGL), entry.js shows the simple 2D version instead
+// if this throws (no usable WebGL), entry.js shows a short notice instead
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, powerPreference: 'high-performance', stencil: false });
-const toLite = (reason) => { renderer.setAnimationLoop(null); if (window.__kpLite) window.__kpLite(reason); };
+const noGL = (reason) => { renderer.setAnimationLoop(null); if (window.__kpNoGL) window.__kpNoGL(reason); };
 let lostTimer = 0;
-canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lostTimer = setTimeout(() => toLite('lost'), 3000); });
+canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); lostTimer = setTimeout(() => noGL('lost'), 3000); });
 canvas.addEventListener('webglcontextrestored', () => { clearTimeout(lostTimer); location.reload(); });
 const clamp = THREE.MathUtils.clamp;
 const ZOOM_ISLAND = [0.45, 1.25], ZOOM_LAB = [0.55, 1.25];
@@ -69,8 +69,43 @@ function setView(key) {
 // ───────── UI wiring ─────────
 const panel = $('#panel'), ctl = $('#ctl');
 let panelOpen = false;
+// small line icons for the About panel
+const ICON = {
+  cap: 'M3 9l9-5 9 5-9 5-9-5zM7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4',
+  calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
+  pin: 'M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+  code: 'M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14',
+  cloud: 'M7 18a4 4 0 01-.5-8 5.5 5.5 0 0110.7-1A4.5 4.5 0 0117 18H7z',
+  box: 'M3 8l9-5 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8',
+  flask: 'M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4a2 2 0 001.8-3l-5-9V3M8 15h8',
+  gear: 'M12 15a3 3 0 100-6 3 3 0 000 6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1',
+  db: 'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6',
+  lock: 'M6 11h12v9H6zM8 11V8a4 4 0 018 0v3',
+  branch: 'M6 4v12M18 8a2 2 0 100-4 2 2 0 000 4zM6 20a2 2 0 100-4 2 2 0 000 4zM18 8c0 5-12 3-12 8',
+  users: 'M9 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2 20c0-3.5 3-6 7-6s7 2.5 7 6M17 4.5a3.5 3.5 0 010 6.5M18 14c2.5.6 4 2.6 4 5',
+};
+const icon = (k, cls = 'h-5 w-5') => `<svg viewBox="0 0 24 24" class="${cls} shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[k] || ICON.code}"/></svg>`;
+function profileHTML(p) {
+  const f = p.profile, chip = (t) => `<span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] leading-none">${t}</span>`;
+  return `<div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:text-left">
+      <img src="${f.photo}" alt="${p.title}" width="144" height="144" class="h-32 w-32 shrink-0 object-contain drop-shadow-[0_0_18px_rgba(120,140,255,.45)] sm:h-36 sm:w-36">
+      <div class="min-w-0 flex-1">
+        <h2 class="text-2xl font-bold leading-tight [overflow-wrap:anywhere] sm:text-3xl">${p.title}</h2>
+        <p class="mt-2 inline-flex items-center gap-2 rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-4 py-1.5 text-sm font-semibold">${icon('code', 'h-4 w-4')}${f.role}</p>
+        <ul class="mt-3 space-y-1.5 text-sm text-white/90">${f.facts.map((x) => `<li class="flex items-center justify-center gap-2.5 sm:justify-start"><span class="text-fuchsia-200">${icon(x.icon, 'h-5 w-5')}</span><span>${x.text}</span></li>`).join('')}</ul>
+      </div>
+    </div>
+    <blockquote class="mt-5 rounded-2xl border border-white/15 bg-white/5 p-4 text-sm leading-relaxed text-white/90"><span class="mr-1 align-[-0.3em] text-3xl leading-none text-fuchsia-300">“</span>${p.text}</blockquote>
+    <div class="mt-5 grid gap-x-6 gap-y-5 sm:grid-cols-2">${p.groups.map((g) => `<div><p class="mb-2 flex items-center gap-2 border-b border-white/10 pb-2 text-sm font-semibold"><span class="text-fuchsia-300">${icon(g.icon)}</span>${g.title}</p><div class="flex flex-wrap gap-1.5">${g.items.map(chip).join('')}</div></div>`).join('')}</div>`;
+}
 function openPanel(key) {
   const p = CONFIG.places[key]; if (!p) return;
+  const prof = p.profile;
+  ['#p-kicker', '#p-title', '#p-text', '#p-groups'].forEach((q) => $(q).classList.toggle('hidden', !!prof));
+  $('#p-profile').classList.toggle('hidden', !prof);
+  panel.dataset.kind = prof ? 'about' : 'info';
+  if (prof) $('#p-profile').innerHTML = profileHTML(p);
+
   const chip = (t) => `<span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs">${t}</span>`;
   $('#p-kicker').textContent = p.kicker; $('#p-title').textContent = p.title; $('#p-text').textContent = p.text;
   $('#p-points').innerHTML = (p.points || []).map((t) => `<li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_8px_#22d3ee]"></span><span>${t}</span></li>`).join('');
@@ -130,7 +165,6 @@ function resetView() {
 $('#ctl-in').addEventListener('click', () => zoomBy(0.8));
 $('#ctl-out').addEventListener('click', () => zoomBy(1.25));
 $('#ctl-reset').addEventListener('click', resetView);
-$('#to-lite').addEventListener('click', () => { try { localStorage.setItem('kp-view', 'lite'); } catch (_) {} });
 // stop iOS Safari from zooming the whole page with a pinch on the UI
 document.addEventListener('gesturestart', (e) => e.preventDefault());
 $('#social-gh').href = CONFIG.links.github; $('#social-in').href = CONFIG.links.linkedin; $('#social-mail').href = CONFIG.links.email;
@@ -234,12 +268,11 @@ function resize() {
   if (viewDist) viewDist = VIEWS[currentView].d * portraitScale() * LENS;
 }
 addEventListener('resize', resize);
-let acc = 0, frames = 0, slow = 0, fast = 0, crawl = 0, offered2D = false;
+let acc = 0, frames = 0, slow = 0, fast = 0;
 function adapt(dt) {
   acc += dt; frames++;
   if (frames < 45) return;
   const avg = acc / frames; acc = 0; frames = 0;
-  if (avg > 0.05 && pr <= 0.71) { if (++crawl === 4 && !offered2D) { offered2D = true; toast('The 3D view is running slowly on this device.', { label: 'Switch to 2D view', onClick: () => { try { localStorage.setItem('kp-view', 'lite'); } catch (_) {} location.href = '?lite=1'; } }); } } else crawl = 0;
   if (avg > 0.028 && pr > 0.7) { pr = Math.max(0.7, pr - 0.2); slow++; fast = 0; resize(); }
   else if (avg < 0.0185 && pr < maxPR && slow < 6) { if (++fast > 4) { pr = Math.min(maxPR, pr + 0.15); fast = 0; resize(); } }
   else fast = 0;
@@ -282,7 +315,7 @@ function islandFrame(dt, t, now) {
   camera.lookAt(cur.tx, cur.ty, cur.tz);
 
   // shift the scene so the focused building isn't hidden behind the info panel
-  const wantX = panelOpen && W >= 900 ? 230 : 0, wantY = panelOpen && W < 900 ? H * 0.24 : 0;
+  const wantX = panelOpen && W >= 900 ? (panel.dataset.kind === 'about' && W >= 1100 ? 330 : 230) : 0, wantY = panelOpen && W < 900 ? H * 0.24 : 0;
   shiftX += (wantX - shiftX) * k; shiftY += (wantY - shiftY) * k;
   lensY += (((currentView === 'home' && camera.aspect >= 1.2) ? 0 : camera.aspect < 1.2 ? 0.62 : 0.5) - lensY) * k;
   const FW = W * LENS, FH = H * LENS;

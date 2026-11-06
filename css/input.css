@@ -21,6 +21,7 @@
   #panel[data-open="true"] { @apply opacity-100; }
   @media (min-width: 900px) {
     #panel { @apply right-6 top-24 w-[420px] max-h-[calc(100%-8rem)]; }
+    #panel[data-kind="about"] { width: min(460px, calc(100vw - 3rem)); }
     #panel[data-open="false"] { transform: translateX(40px); }
   }
   /* phones & tablets: bottom sheet above the bottom nav (drag the handle down to close) */
@@ -29,6 +30,8 @@
     #panel[data-open="false"] { transform: translateY(40px); }
   }
 }
+
+@media (min-width: 1100px) { #panel[data-kind="about"] { width: min(680px, calc(100vw - 3rem)); } }
 
 /* ───────── layout that follows the device's safe areas (notches, home bar) ───────── */
 #top-bar { padding-top: max(1rem, env(safe-area-inset-top)); padding-left: max(1rem, env(safe-area-inset-left)); padding-right: max(1rem, env(safe-area-inset-right)); }

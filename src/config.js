@@ -21,18 +21,28 @@ export const CONFIG = {
       label: 'About me',
       kicker: 'G.K.H. Premasiri · Software Engineering Intern',
       title: 'Kavidu_H_Premasiri',
+      // profile card shown at the top of the About panel
+      profile: {
+        photo: 'assets/profile.png',
+        role: 'Software Engineering Intern',
+        facts: [
+          { icon: 'cap', text: 'B.Sc. (Hons) in Computer Science' },
+          { icon: 'calendar', text: '3rd Year – 1st Semester (Final Year)' },
+          { icon: 'pin', text: 'Wariyapola, Sri Lanka' },
+        ],
+      },
       text:
         "I'm a Software Engineering Intern and a third-year, first-semester undergraduate pursuing a BSc (Hons) in Computer Science. I'm passionate about software development, modern web technologies, 3D experiences, and DevOps, with a strong drive to build innovative solutions and continuously grow as a software engineer.",
       groups: [
-        { title: 'Programming & Frameworks', items: ['Spring Boot', 'React', 'Go', 'Node.js', 'Java', 'Python', 'R', 'C#', 'Tailwind CSS', 'HTML', 'CSS3', 'JavaScript', 'PHP'] },
-        { title: 'Cloud Computing', items: ['AWS', 'Railway', 'Vercel', 'Netlify'] },
-        { title: 'Containerization & Orchestration', items: ['Docker'] },
-        { title: 'Testing', items: ['Playwright', 'JMeter', 'JUnit', 'Mockito'] },
-        { title: 'Code Quality', items: ['SonarQube'] },
-        { title: 'Databases', items: ['MongoDB', 'MySQL', 'PostgreSQL', 'Supabase'] },
-        { title: 'Authentication & Security', items: ['Keycloak'] },
-        { title: 'Version Control', items: ['Git', 'GitLab'] },
-        { title: 'Soft Skills', items: ['Team Collaboration', 'Project Management', 'Analytical Thinking', 'Documentation'] },
+        { icon: 'code', title: 'Programming & Frameworks', items: ['Spring Boot', 'React', 'Go', 'Node.js', 'Java', 'Python', 'R', 'C#', 'TypeScript', 'JavaScript', 'PHP', 'Express', 'Gin', 'GORM', 'Vite', 'Three.js', 'Tailwind CSS', 'Bootstrap', 'HTML', 'CSS3'] },
+        { icon: 'cloud', title: 'Cloud Computing', items: ['AWS', 'AWS S3', 'CodePipeline', 'Railway', 'Vercel', 'Netlify'] },
+        { icon: 'box', title: 'Containerization & Orchestration', items: ['Docker', 'Docker Hub'] },
+        { icon: 'flask', title: 'Testing', items: ['Playwright', 'Puppeteer', 'JMeter', 'JUnit', 'Mockito'] },
+        { icon: 'gear', title: 'Code Quality', items: ['SonarQube'] },
+        { icon: 'db', title: 'Databases', items: ['MongoDB', 'MySQL', 'PostgreSQL', 'Supabase'] },
+        { icon: 'lock', title: 'Authentication & Security', items: ['Keycloak', 'JWT', 'bcrypt'] },
+        { icon: 'branch', title: 'Version Control', items: ['Git', 'GitLab'] },
+        { icon: 'users', title: 'Soft Skills', items: ['Team Collaboration', 'Project Management', 'Analytical Thinking', 'Documentation'] },
       ],
       buttons: [
         { label: 'GitHub', href: 'github' },
